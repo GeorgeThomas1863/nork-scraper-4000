@@ -1,4 +1,3 @@
-
 /**
  * @fileoverview Main application entry point for the KCNA scraping service
  * @module app
@@ -14,9 +13,8 @@ import express from "express";
 // import session from "express-session";
 
 import CONFIG from "./config/scrape-config.js";
-import routes from "./routes/kcna-routes.js";
+import routes from "./routes/router.js";
 import * as db from "./data/db.js";
-
 
 /**
  * Get / define the path / directory for the current project
@@ -31,8 +29,8 @@ const __dirname = dirname(__filename);
  */
 const app = express();
 
-app.set("views", join(__dirname, "html"));
-app.set("view engine", "ejs");
+// app.set("views", join(__dirname, "html"));
+// app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -43,7 +41,7 @@ app.use(express.static("public"));
  * Configure / set custom express static path for pictures on file system
  * (simplifies uploading / downloading pics)
  */
-app.use(CONFIG.expressPicPath, express.static(CONFIG.savePicPathBase));
+// app.use(CONFIG.expressPicPath, express.static(CONFIG.savePicPathBase));
 app.use(routes);
 
 /**
