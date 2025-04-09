@@ -16,17 +16,9 @@ import CONFIG from "./config/scrape-config.js";
 import routes from "./routes/router.js";
 import * as db from "./data/db.js";
 
-/**
- * Get / define the path / directory for the current project
- * @type {string}
- */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-/**
- * Express application instance
- * @type {import('express').Application}
- */
 const app = express();
 
 // app.set("views", join(__dirname, "html"));
@@ -50,5 +42,6 @@ app.use(routes);
  */
 db.dbConnect().then(() => {
   //port to listen
-  app.listen(CONFIG.port);
+  // app.listen(CONFIG.port);
+  app.listen(1951);
 });

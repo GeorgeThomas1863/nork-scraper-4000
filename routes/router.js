@@ -11,10 +11,6 @@ import express from "express";
 // import { indexDisplay, adminDisplay, display404, display500 } from "../controllers/display.js";
 // import { parseCommand } from "../src/scrape-parse.js";
 
-/**
- * Express router instance
- * @type {import('express').Router}
- */
 const router = express.Router();
 
 /**
