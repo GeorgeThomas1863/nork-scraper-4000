@@ -17,7 +17,7 @@ import routes from "./routes/router.js";
 import * as db from "./data/db.js";
 
 //TEST, DELETE later
-import { runArticleScrape } from "./src/articles/articles-auto.js";
+import { scrapeKCNA } from "./src/srape.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,7 +39,7 @@ app.use(express.static("public"));
 // app.use(CONFIG.expressPicPath, express.static(CONFIG.savePicPathBase));
 app.use(routes);
 
-runArticleScrape();
+scrapeKCNA();
 
 /**
  * Connect to database and start the server if db works
@@ -48,5 +48,5 @@ runArticleScrape();
 db.dbConnect().then(() => {
   //port to listen
   // app.listen(CONFIG.port);
-  app.listen(1951);
+  app.listen(1952);
 });

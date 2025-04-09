@@ -84,14 +84,19 @@ class KCNA {
    * @throws {Error} Logs the error to console if the request fails
    */
   async getDataType() {
-    try {
-      const data = await fetch(this.dataObject.url);
-      if (!data || !data.headers) return null;
-      const dataType = data.headers.get("content-type");
-      return dataType;
-    } catch (error) {
-      console.log(error);
+    const data = await fetch(this.dataObject.url);
+
+    //if URL doesnt exist / return headers throw error
+    if (!data || !data.headers) {
+      const error = new Error("URL DOESNT EXIST");
+      error.url = this.dataObject.url;
+      error.function = "Get Data Type";
+      throw error;
     }
+
+    //otherwise return the data type
+    const dataType = data.headers.get("content-type");
+    return dataType;
   }
 
   /**

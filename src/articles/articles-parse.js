@@ -45,9 +45,12 @@ export const parseArticleContentHtml = async (html) => {
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
+  console.log("HERE!!!!!!!!");
+  console.log(html);
+
   // Extract the title - KCNA uses article-main-title class
   const titleElement = document.querySelector(".article-main-title");
-  const articleTitle = titleElement.textContent.replace(/\s+/g, " ").trim();
+  const articleTitle = titleElement?.textContent?.replace(/\s+/g, " ").trim();
 
   //extract date
   const dateElement = document.querySelector(".publish-time");
@@ -55,8 +58,8 @@ export const parseArticleContentHtml = async (html) => {
 
   //get article PAGE (if exists) where all pics are displayed
   const mediaIconElement = document.querySelector(".media-icon");
-  const hrefURL = mediaIconElement.firstElementChild.getAttribute("href");
-  const picURL = "http://www.kcna.kp" + hrefURL;
+  const hrefURL = mediaIconElement?.firstElementChild?.getAttribute("href");
+  const picURL = await parsePicURL(hrefURL);
 
   //break out content parsing
   const contentElement = document.querySelector(".content-wrapper");
@@ -76,6 +79,10 @@ export const parseArticleContentHtml = async (html) => {
 
 //breaks out date parsing
 export const parseDateElement = async (dateElement) => {
+  //return null if empty
+  if (!dateElement) return null;
+
+  //extract date
   const dateRaw = dateElement.textContent.replace('www.kcna.kp ', '').replace(/[\(\)]/g, '').trim(); //prettier-ignore
   const year = parseInt(dateRaw.substring(0, 4));
   const month = parseInt(dateRaw.substring(5, 7));
@@ -87,6 +94,14 @@ export const parseDateElement = async (dateElement) => {
   // otherwise create and return a new Date object (month is 0-indexed in JavaScript)
   const articleDate = new Date(year, month - 1, day);
   return articleDate;
+};
+
+export const parsePicURL = async (hrefURL) => {
+  //if empty input return null
+  if (!hrefURL) return null;
+
+  //otherwise return the string
+  return "http://www.kcna.kp" + hrefURL;
 };
 
 export const parseArticleContent = async (contentArray) => {
