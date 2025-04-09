@@ -28,6 +28,8 @@ export const getNewArticleURLs = async () => {
 
 //input is array of objects
 export const getNewArticleData = async (inputArray) => {
+  console.log("AHHHHH");
+  console.log(inputArray);
   //return if input empty (shouldnt happen)
   if (!inputArray || inputArray.length === 0) return;
 
