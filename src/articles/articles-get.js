@@ -35,11 +35,7 @@ export const getNewArticleData = async (inputArray) => {
   for (let i = 0; i < inputArray.length; i++) {
     const article = inputArray[i].url;
     const articleModel = new KCNA({ url: article });
-    const articleHtml = articleModel.getHTML();
-
-    console.log(articleHtml);
-    console.log("AHHHHHHHHHHHH");
-    continue;
+    const articleHtml = await articleModel.getHTML();
 
     const articleObj = await parseArticleContentHtml(articleHtml);
     console.log("ALLAHU AKBAR");
