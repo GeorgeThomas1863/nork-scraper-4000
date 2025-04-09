@@ -3,6 +3,7 @@ import { getNewArticleURLs, getNewArticleData } from "./articles-get.js";
 export const runArticleScrape = async () => {
   //get / find new articles
   const newArticleURLs = await getNewArticleURLs();
+  console.log("FINISHED FUCKER")
   console.log(newArticleURLs);
   return;
   //check if any new, return null if not
