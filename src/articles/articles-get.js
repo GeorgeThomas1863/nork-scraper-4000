@@ -28,14 +28,14 @@ export const getNewArticleURLs = async () => {
 
 //input is array of objects
 export const getNewArticleData = async (inputArray) => {
-  console.log("AHHHHH");
-  console.log(inputArray);
   //return if input empty (shouldnt happen)
   if (!inputArray || inputArray.length === 0) return;
 
   //loop through input array
   for (let i = 0; i < inputArray.length; i++) {
     const article = inputArray[i].url;
+    console.log("AHHHHHHHHHHH");
+    console.log(article);
     const articleModel = new KCNA({ url: article });
     const articleHtml = articleModel.getHTML();
 
