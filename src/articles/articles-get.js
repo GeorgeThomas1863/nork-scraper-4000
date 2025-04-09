@@ -3,8 +3,8 @@ import CONFIG from "../../config/scrape-config.js";
 import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
-import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse";
-import { storeArticleListArray } from "./articles-store";
+import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
+import { storeArticleListArray } from "./articles-store.js";
 
 export const getNewArticleURLs = async () => {
   //gets html from page with current list of articles
