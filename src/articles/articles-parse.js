@@ -42,6 +42,8 @@ export const parseArticleListHtml = async (html) => {
  * @returns {Promise<Object>} Article object with title, date, content and picture URL
  */
 export const parseArticleContentHtml = async (html) => {
+  console.log("AHHHHHHHHHHHHHHH");
+  console.log(html);
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
