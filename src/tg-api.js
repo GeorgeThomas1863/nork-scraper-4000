@@ -66,7 +66,7 @@ export const uploadPicsTG = async (params) => {
 
   //check token
   let data = await tgModel.tgPicFS(tokenIndex);
-  const checkData = await checkToken(data);
+  const checkData = checkToken(data);
   if (checkData) data = await tgModel.tgPicFS(tokenIndex); //run again
 
   return data;
@@ -80,9 +80,9 @@ export const uploadPicsTG = async (params) => {
  * @returns {number|null} New token index if rotated, null if no rotation needed
  */
 // const checkToken = async (data) => { [removed async??]
-const checkToken = async (inputData) => {
+const checkToken = (data) => {
   //429 bot fucked error
-  if (!inputData || (inputData && data.ok) || (inputData && !inputData.ok && inputData.error_code !== 429)) return null;
+  if (!data || (data && data.ok) || (data && !data.ok && data.error_code !== 429)) return null;
 
   tokenIndex++;
   if (tokenIndex > 11) tokenIndex = 0;

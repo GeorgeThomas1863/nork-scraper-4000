@@ -24,9 +24,6 @@ class KCNA {
   /**
    * @constructor
    * @param {Object} dataObject - The data object with request parameters
-   * @param {string} [dataObject.url] - The URL to fetch content from
-   * @param {string} [dataObject.fileName] - The filename to save content as
-   * @param {string} [dataObject.savePath] - The full path to save downloaded images
    */
   constructor(dataObject) {
     this.dataObject = dataObject;
@@ -137,8 +134,6 @@ class KCNA {
 
       return picURL;
     } catch (error) {
-      //dont think error needed here
-
       error.url = picURL;
       error.function = "downloadPicFS";
       throw error;
