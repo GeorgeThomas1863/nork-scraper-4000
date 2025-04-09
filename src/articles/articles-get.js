@@ -3,51 +3,73 @@ import CONFIG from "../../config/scrape-config.js";
 import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
-/**
- * GETS HTML of the main page that contains a list of articles (no input params)
- * @function getArticleListHtml
- * @returns {Promise<string>} HTML content of page with list of articles
- */
-export const getArticleListHtml = async () => {
-  const articleListObj = {
-    url: CONFIG.articleListURL,
-    fileName: "articleList.html",
-  };
+import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse";
+import { storeArticleListArray } from "./articles-store";
 
-  //get article list
-  const articleListModel = new KCNA(articleListObj);
+export const getNewArticleURLs = async () => {
+  //gets html from page with current list of articles
+  const articleListModel = new KCNA({ url: CONFIG.articleListURL });
   const articleListHtml = await articleListModel.getHTML();
 
-  return articleListHtml;
+  //get the article list array from current articles html
+  const articleListArray = await parseArticleListHtml(articleListHtml);
+  await storeArticleListArray(articleListArray); //store the article list
+
+  //collections being compared
+  const checkParams = {
+    collection1: CONFIG.articleListCollection, //list of article URLs (just updated)
+    collection2: CONFIG.articleContentCollection, //list of articles content already downloaded
+  };
+  //pulls out the ones not already downloaded
+  const checkModel = new dbModel(checkParams, "");
+  const newArticleURLs = await checkModel.findNewURLs();
+  return newArticleURLs;
 };
 
-/**
- * GETs article array of ONLY NEW SHIT (urls) for specified type; so always downloading / uploading new stuff, skipping already done stuff
- * @function getArticleArray
- * @param {string} type - Type of articles to get ("articlesToDownload" or "articlesToUpload")
- * @returns {Promise<Array>} Array of article objects
- */
-export const getArticleArray = async (type) => {
-  let params = "";
+//input is array of objects
+export const getNewArticleData = async (inputArray) => {
+  //return if input empty (shouldnt happen)
+  if (!inputArray || inputArray.length === 0) return;
 
-  //return on error input
-  if (type !== "articlesToDownload" && type !== "articlesToUpload") return;
+  //loop through input array
+  for (let i = 0; i < inputArray.length; i++) {
+    const article = inputArray[i].url;
+    const articleModel = new KCNA({ url: article });
+    const articleHtml = articleModel.getHTML();
 
-  if (type === "articlesToDownload") {
-    params = {
-      collection1: CONFIG.articleListCollection, //old thing, to compare against
-      collection2: CONFIG.articleContentCollection, //new thing, what this funct is doing
-    };
+    const articleObj = await parseArticleContentHtml(articleHtml);
+    console.log("ALLAHU AKBAR");
+    console.log(articleObj);
   }
-
-  if (type === "articlesToUpload") {
-    params = {
-      collection1: CONFIG.articleContentCollection,
-      collection2: CONFIG.articlePostedCollection,
-    };
-  }
-
-  const articleModel = new dbModel(params, "");
-  const articleArray = await articleModel.findNewURLs();
-  return articleArray;
 };
+
+// /**
+//  * GETs article array of ONLY NEW SHIT (urls) for specified type; so always downloading / uploading new stuff, skipping already done stuff
+//  * @function getArticleArray
+//  * @param {string} type - Type of articles to get ("articlesToDownload" or "articlesToUpload")
+//  * @returns {Promise<Array>} Array of article objects
+//  */
+// export const getArticleArray = async (type) => {
+//   let params = "";
+
+//   //return on error input
+//   if (type !== "articlesToDownload" && type !== "articlesToUpload") return;
+
+//   if (type === "articlesToDownload") {
+//     params = {
+//       collection1: CONFIG.articleListCollection, //old thing, to compare against
+//       collection2: CONFIG.articleContentCollection, //new thing, what this funct is doing
+//     };
+//   }
+
+//   if (type === "articlesToUpload") {
+//     params = {
+//       collection1: CONFIG.articleContentCollection,
+//       collection2: CONFIG.articlePostedCollection,
+//     };
+//   }
+
+//   const articleModel = new dbModel(params, "");
+//   const articleArray = await articleModel.findNewURLs();
+//   return articleArray;
+// };
