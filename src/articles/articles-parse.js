@@ -39,9 +39,10 @@ export const parseArticleListHtml = async (html) => {
  * (might want to do in model but doing here for now)
  * @function parseArticleHtml
  * @param {string} html - HTML content of the article page
+ *  @param {string} url - url of page being parsed
  * @returns {Promise<Object>} Article object with title, date, content and picture URL
  */
-export const parseArticleContentHtml = async (html) => {
+export const parseArticleContentHtml = async (html, url) => {
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
@@ -68,6 +69,7 @@ export const parseArticleContentHtml = async (html) => {
 
   //build and return obj
   const articleObj = {
+    url: url,
     title: articleTitle,
     date: articleDate,
     content: articleContent,

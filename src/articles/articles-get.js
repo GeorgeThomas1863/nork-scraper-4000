@@ -4,7 +4,7 @@ import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
-import { storeArticleListArray } from "./articles-store.js";
+import { storeArticleArray } from "./articles-store.js";
 
 export const getNewArticleURLs = async () => {
   //gets html from page with current list of articles
@@ -13,7 +13,7 @@ export const getNewArticleURLs = async () => {
 
   //get the article list array from current articles html
   const articleListArray = await parseArticleListHtml(articleListHtml);
-  await storeArticleListArray(articleListArray); //store the article list
+  await storeArticleArray(articleListArray, CONFIG.articleListCollection); //store the article list
 
   //collections being compared
   const checkParams = {
@@ -37,10 +37,13 @@ export const getNewArticleData = async (inputArray) => {
     const articleModel = new KCNA({ url: article });
     const articleHtml = await articleModel.getHTML();
 
-    const articleObj = await parseArticleContentHtml(articleHtml);
-    console.log("ALLAHU AKBAR");
+    const articleObj = await parseArticleContentHtml(articleHtml, i);
+    const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
+    const storeTest = await storeModel.storeUniqueURL();
+    console.log(storeTest);
     console.log(articleObj);
   }
+  return true;
 };
 
 // /**

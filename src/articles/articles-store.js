@@ -1,4 +1,3 @@
-import CONFIG from "../../config/scrape-config.js";
 import dbModel from "../../models/db-model.js";
 
 /**
@@ -7,13 +6,13 @@ import dbModel from "../../models/db-model.js";
  * @param {Array} inputArray - Array of objects containing article URLs
  * @returns {Promise<boolean>} True if storage was successful
  */
-export const storeArticleListArray = async (inputArray) => {
+export const storeArticleArray = async (inputArray, collection) => {
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const urlObj = {
         url: inputArray[i],
       };
-      const storeModel = new dbModel(urlObj, CONFIG.articleListCollection);
+      const storeModel = new dbModel(urlObj, collection);
       await storeModel.storeUniqueURL();
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
