@@ -5,7 +5,10 @@ export const runPicsScrape = async () => {
   //get / find new articles
   const newPicURLs = await getNewPicURLs();
   console.log(newPicURLs);
-  console.log("FINISHED GETTING ARTICLES");
+  console.log("FINISHED GETTING PICS");
+
+  //DOWNLOAD PICS (DONT UPLOAD HERE)
+
 
   //   //check if any new, return null if not
   //   if (!newArticleURLs || newArticleURLs.length === 0) return null;

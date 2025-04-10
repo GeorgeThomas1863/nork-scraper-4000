@@ -35,6 +35,10 @@ export const getNewPicURLs = async () => {
           dateString: dateString,
           picPath: CONFIG.savePicPathBase + i + ".jpg",
         };
+        const storeModel = new dbModel(picParams, CONFIG.picCollection);
+        await storeModel.storeUniqueURL();
+
+        //STORE PIC HERE
         console.log(picParams);
 
         newPicArray.push(picParams);

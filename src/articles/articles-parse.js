@@ -1,5 +1,8 @@
 import { JSDOM } from "jsdom";
 
+import CONFIG from "../../config/scrape-config.js";
+import dbModel from "../../models/db-model.js"
+
 /**
  * Parses the main page HTML to extract a list of article URLs
  * @function parseArticleListHtml
@@ -28,6 +31,9 @@ export const parseArticleListHtml = async (html) => {
   for (let i = 0; i < linkElements.length; i++) {
     const href = linkElements[i].getAttribute("href");
     const url = urlConstant + href; //build full url
+    //STORE HERE
+    const storeModel = new dbModel({url: url}, CONFIG.articleListCollection)
+    await storeModel.storeUniqueURL()
     articleListArray.push(url); //add to array
   }
 

@@ -12,8 +12,10 @@ export const getNewArticleURLs = async () => {
   const articleListHtml = await articleListModel.getHTML();
 
   //get the article list array from current articles html
-  const articleListArray = await parseArticleListHtml(articleListHtml);
-  await storeArticleArray(articleListArray, CONFIG.articleListCollection); //store the article list
+  await parseArticleListHtml(articleListHtml);
+
+  //store the article list STORED ELSWEHERE
+  // await storeArticleArray(articleListArray, CONFIG.articleListCollection); 
 
   //collections being compared
   const checkParams = {
