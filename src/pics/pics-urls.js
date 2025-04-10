@@ -21,7 +21,8 @@ export const getNewPicURLs = async () => {
     // console.log(i);
     for (let k = 0; k < dateArray.length; k++) {
       try {
-        const url = CONFIG.picBaseURL + dateArray[arrayIndex] + "/PIC00" + i + ".jpg";
+        const dateString = dateArray[arrayIndex];
+        const url = CONFIG.picBaseURL + dateString + "/PIC00" + i + ".jpg";
         console.log(url);
 
         //check if url new AND if pic (will throw error if not)
@@ -39,6 +40,8 @@ export const getNewPicURLs = async () => {
         newPicArray.push(picParams);
       } catch (e) {
         console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+        arrayIndex++;
+        if (arrayIndex > 2) arrayIndex = 0; //reset date array
       }
     }
   }
@@ -53,9 +56,6 @@ export const getNewPicURLs = async () => {
  */
 
 export const checkPicURL = async (url) => {
-  //define arrayIndex here?
-  let arrayIndex = 0;
-
   //check if already have url BEFORE http req
   const checkModel = new dbModel({ url: url }, CONFIG.picCollection);
   await checkModel.urlNewCheck(); //will throw error if not new
@@ -64,17 +64,16 @@ export const checkPicURL = async (url) => {
   const kcnaModel = new KCNA({ url: url });
   const dataType = await kcnaModel.getDataType();
 
-  //if pic return true
-  if (dataType === "image/jpeg") return true;
+  //if not pic throw error
+  if (dataType !== "image/jpeg") {
+    const error = new Error("URL NOT A PIC");
+    error.url = url;
+    error.function = "checkPicURL";
+    throw error;
+  }
 
-  //othewise move on / throw error
-  arrayIndex++;
-  if (arrayIndex > 2) arrayIndex = 0; //reset arrays
-
-  const error = new Error("URL NOT A PIC");
-  error.url = url;
-  error.function = "checkPicURL";
-  throw error;
+  //othewise return true
+  return true;
 };
 
 /**
