@@ -22,6 +22,7 @@ export const getNewArticleURLs = async () => {
     collection1: CONFIG.articleListCollection, //list of article URLs (just updated)
     collection2: CONFIG.articleContentCollection, //list of articles content already downloaded
   };
+  
   //pulls out the ones not already downloaded
   const checkModel = new dbModel(checkParams, "");
   const newArticleURLs = await checkModel.findNewURLs();
