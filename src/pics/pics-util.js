@@ -4,31 +4,24 @@ import dbModel from "../../models/db-model.js";
 import KCNA from "../../models/kcna-model.js";
 
 /**
- * checks if url new AND if its a pic
- * @function checkPicURL
+ * checks picURL header for no reason
+ * @function checkHeader
  * @param url (url to be checked)
  * @returns true if new / exists, throws error if not
  */
-
-export const checkPicURL = async (url, collection) => {
-  //check if already have url BEFORE http req
-  const checkModel = new dbModel({ url: url }, collection);
-  await checkModel.urlNewCheck(); //will throw error if not new
-
+//FUCKING USELESS
+export const checkHeader = async (inputURL) => {
   //http req
-  const kcnaModel = new KCNA({ url: url });
+  const kcnaModel = new KCNA({ url: inputURL });
   const dataType = await kcnaModel.getDataType();
+  console.log("DATA TYPE");
+  console.log(dataType);
 
-  //if not pic throw error
-  if (dataType !== "image/jpeg") {
-    const error = new Error("URL NOT A PIC");
-    error.url = url;
-    error.function = "checkPicURL";
-    throw error;
-  }
+  //if pic return data
+  if (dataType === "image/jpeg") return dataType;
 
-  //othewise return true
-  return true;
+  //othewise return null
+  return null;
 };
 
 /**
