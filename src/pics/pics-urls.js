@@ -16,10 +16,9 @@ export const getNewPicURLs = async () => {
   const currentKcnaId = await getCurrentKcnaId();
   const dateArray = await getDateArray();
 
-  
-  //loop 200 (400 lookups an hour)
-  const startId = currentKcnaId - 100;
-  const stopId = currentKcnaId + 100;
+  //loop 200 (400 lookups an hour) [DOUBLE CHECK in CONFIG]
+  const startId = currentKcnaId - CONFIG.picsPerScrape;
+  const stopId = currentKcnaId + CONFIG.picsPerScrape;
 
   //loop
   let arrayIndex = 0;
