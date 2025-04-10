@@ -6,7 +6,7 @@ import { getNewPicURLs } from "./pics-urls.js";
  * @returns number of new pics (length of newPicURLs array)
  */
 export const runPicsScrape = async () => {
-  console.log("STARTING SCRAPE");
+  console.log("STARTING PIC SCRAPE");
   //get / find new articles
   const newPicURLs = await getNewPicURLs();
   console.log(newPicURLs);

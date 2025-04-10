@@ -1,7 +1,7 @@
 import { getNewArticleURLs, getNewArticleData } from "./articles-get.js";
 
 export const runArticleScrape = async () => {
-  console.log("STARTING SCRAPE");
+  console.log("STARTING ARTICLE SCRAPE");
   //get / find new articles
   const newArticleURLs = await getNewArticleURLs();
   console.log("FINISHED GETTING ARTICLE URLs");

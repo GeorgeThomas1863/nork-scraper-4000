@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../../config/scrape-config.js";
-import dbModel from "../../models/db-model.js"
+import dbModel from "../../models/db-model.js";
 
 /**
  * Parses the main page HTML to extract a list of article URLs
@@ -29,12 +29,16 @@ export const parseArticleListHtml = async (html) => {
 
   //loop through a tags and pull out hrefs
   for (let i = 0; i < linkElements.length; i++) {
-    const href = linkElements[i].getAttribute("href");
-    const url = urlConstant + href; //build full url
-    //STORE HERE
-    const storeModel = new dbModel({url: url}, CONFIG.articleListCollection)
-    await storeModel.storeUniqueURL()
-    articleListArray.push(url); //add to array
+    try {
+      const href = linkElements[i].getAttribute("href");
+      const url = urlConstant + href; //build full url
+      //STORE HERE
+      const storeModel = new dbModel({ url: url }, CONFIG.articleListCollection);
+      await storeModel.storeUniqueURL();
+      articleListArray.push(url); //add to array
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
 
   return articleListArray;
