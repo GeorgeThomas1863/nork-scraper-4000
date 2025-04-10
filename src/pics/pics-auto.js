@@ -1,4 +1,4 @@
-import { getNewPicURLs } from "./pics-urls";
+import { getNewPicURLs } from "./pics-urls.js";
 
 export const runPicsScrape = async () => {
   console.log("STARTING SCRAPE");

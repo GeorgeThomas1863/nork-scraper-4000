@@ -1,7 +1,7 @@
-import CONFIG from "../../config/scrape-config";
+import CONFIG from "../../config/scrape-config.js";
 
-import dbModel from "../../models/db-model";
-import KCNA from "../../models/kcna-model";
+import dbModel from "../../models/db-model.js";
+import KCNA from "../../models/kcna-model.js";
 
 export const getNewPicURLs = async () => {
   const newPicArray = [];
