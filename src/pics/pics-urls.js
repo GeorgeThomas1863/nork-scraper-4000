@@ -22,6 +22,7 @@ export const getNewPicURLs = async () => {
     for (let k = 0; k < dateArray.length; k++) {
       try {
         const url = CONFIG.picBaseURL + dateArray[arrayIndex] + "/PIC00" + i + ".jpg";
+        console.log(url);
 
         //check if url new AND if pic (will throw error if not)
         await checkPicURL(url);
@@ -33,6 +34,7 @@ export const getNewPicURLs = async () => {
           dateString: dateString,
           picPath: CONFIG.savePicPathBase + i + ".jpg",
         };
+        console.log(picParams);
 
         newPicArray.push(picParams);
       } catch (e) {
