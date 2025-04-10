@@ -37,7 +37,7 @@ export const getNewArticleData = async (inputArray) => {
     const articleModel = new KCNA({ url: article });
     const articleHtml = await articleModel.getHTML();
 
-    const articleObj = await parseArticleContentHtml(articleHtml, i);
+    const articleObj = await parseArticleContentHtml(articleHtml, article);
     const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
     const storeTest = await storeModel.storeUniqueURL();
     console.log(storeTest);
