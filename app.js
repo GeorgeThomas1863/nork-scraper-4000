@@ -1,3 +1,11 @@
+//TO DO
+
+//PULL PICS ON ARTICLES
+//TEST DOWNLOAD PICS WORKS
+//BUILD UPLOAD TO TG, MAKE IT COMBO BY DEFAULT
+
+//BUILD API interface
+
 /**
  * @fileoverview Main application entry point for the KCNA scraping service
  * @module app
@@ -48,5 +56,5 @@ scrapeKCNA();
 db.dbConnect().then(() => {
   //port to listen
   // app.listen(CONFIG.port);
-  app.listen(1953);
+  // app.listen(1953);
 });
