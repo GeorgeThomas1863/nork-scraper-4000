@@ -4,7 +4,7 @@ import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
-import { storeArticleArray } from "./articles-store.js";
+// import { storeArticleArray } from "./articles-store.js";
 
 export const getNewArticleURLs = async () => {
   //gets html from page with current list of articles
