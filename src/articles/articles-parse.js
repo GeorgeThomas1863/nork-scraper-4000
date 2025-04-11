@@ -1,6 +1,7 @@
 import { JSDOM } from "jsdom";
 
 import CONFIG from "../../config/scrape-config.js";
+import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
 /**
@@ -47,7 +48,7 @@ export const parseArticleListHtml = async (html) => {
 /**
  * Parses the HTML content of a SINGLE article; extracts / returns data as an object
  * (might want to do in model but doing here for now)
- * @function parseArticleHtml
+ * @function parseArticleContentHtml
  * @param {string} html - HTML content of the article page
  *  @param {string} url - url of page being parsed
  * @returns {Promise<Object>} Article object with title, date, content and picture URL
@@ -85,6 +86,13 @@ export const parseArticleContentHtml = async (html, url) => {
     content: articleContent,
     picURL: picURL,
   };
+
+  //if no article pics return here
+  if (!picURL) return articleObj;
+
+  //otherwise get article pics before returning
+  const articlePicArray = await parseArticlePicHtml(picURL);
+  articleObj.articlePicArray = articlePicArray;
 
   return articleObj;
 };
@@ -126,4 +134,52 @@ export const parseArticleContent = async (contentArray) => {
   // Join paragraphs with double newlines for better readability
   const articleContent = paragraphArray.join("\n\n");
   return articleContent;
+};
+
+export const parseArticlePicHtml = async (picURL) => {
+  //get the html, build dom
+  const htmlModel = new KCNA({ url: picURL });
+  const html = await htmlModel.getHTML();
+  const dom = new JSDOM(html);
+  const document = dom.window.document;
+
+  //define return array
+  const articlePicArray = [];
+
+  //get and loop through img elements
+  const imgElements = document.querySelectorAll("img");
+  for (let i = 0; i < imgElements.length; i++) {
+    const imgItem = imgElements[i];
+    if (!imgItem || !imgItem.getAttribute("src")) {
+      continue;
+    }
+
+    const imgSrc = imgItem.getAttribute("src");
+    const picObj = await parseImgSrc(imgSrc);
+    if (!picObj) continue;
+
+    articlePicArray.push(picObj);
+  }
+
+  return articlePicArray;
+};
+
+export const parseImgSrc = async (imgSrc) => {
+  if (!imgSrc) return null;
+
+  const picPathNum = imgSrc.substring(imgSrc.length - 11, imgSrc.length - 4);
+  if (!picPathNum) return null;
+  const kcnaId = String(Number(picPathNum));
+
+  //extract out stupid date string
+  const dateString = imgSrc.substring(imgSrc.indexOf("/photo/") + "/photo/".length, imgSrc.indexOf("/PIC", imgSrc.indexOf("/photo/")));
+
+  //build and return picObj
+  const picObj = {
+    url: "http://www.kcna.kp" + imgSrc,
+    picPath: CONFIG.savePicPathBase + kcnaId + ".jpg",
+    kcnaId: +kcnaId,
+    dateString: dateString,
+  };
+  return picObj;
 };

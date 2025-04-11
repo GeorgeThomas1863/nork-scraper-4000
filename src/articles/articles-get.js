@@ -1,5 +1,4 @@
 import CONFIG from "../../config/scrape-config.js";
-
 import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
@@ -15,14 +14,14 @@ export const getNewArticleURLs = async () => {
   await parseArticleListHtml(articleListHtml);
 
   //store the article list STORED ELSWEHERE
-  // await storeArticleArray(articleListArray, CONFIG.articleListCollection); 
+  // await storeArticleArray(articleListArray, CONFIG.articleListCollection);
 
   //collections being compared
   const checkParams = {
     collection1: CONFIG.articleListCollection, //list of article URLs (just updated)
     collection2: CONFIG.articleContentCollection, //list of articles content already downloaded
   };
-  
+
   //pulls out the ones not already downloaded
   const checkModel = new dbModel(checkParams, "");
   const newArticleURLs = await checkModel.findNewURLs();
@@ -41,6 +40,7 @@ export const getNewArticleData = async (inputArray) => {
     const articleHtml = await articleModel.getHTML();
 
     const articleObj = await parseArticleContentHtml(articleHtml, article);
+
     const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
     const storeTest = await storeModel.storeUniqueURL();
     console.log(storeTest);
@@ -48,6 +48,13 @@ export const getNewArticleData = async (inputArray) => {
   }
   return true;
 };
+
+// //seperate to avoid fucking up url key in other equation
+// export const getArticlePicHtml = async (picURL) => {
+//   const articlePicModel = new KCNA({ url: picURL });
+//   const articlePicHtml = await articlePicModel.getHTML();
+//   return articlePicHtml;
+// };
 
 // /**
 //  * GETs article array of ONLY NEW SHIT (urls) for specified type; so always downloading / uploading new stuff, skipping already done stuff

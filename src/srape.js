@@ -3,5 +3,7 @@ import { runPicsScrape } from "./pics/pics-auto.js";
 
 export const scrapeKCNA = async () => {
   await runArticleScrape();
-  await runPicsScrape();
+  const testData = await runPicsScrape();
+  console.log(testData);
+  console.log("FUCKING DONE");
 };
