@@ -4,7 +4,6 @@ import dbModel from "../../models/db-model.js";
 import { postPicFS } from "../pics/pics-upload.js";
 
 export const postNewArticles = async () => {
-  console.log("AHHHHHHHH");
   const postParams = {
     collection1: CONFIG.articleContentCollection, //list of article URLs (just updated)
     collection2: CONFIG.articlePostedCollection, //list of articles content already downloaded
@@ -25,6 +24,7 @@ export const postNewArticles = async () => {
 
 //posts BOTH articles and pics
 export const postArticleArray = async (articleArray) => {
+  console.log("AHHHHHHHHHHHHHHHHHH2");
   //loop through array
   for (let i = 0; i < articleArray.length; i++) {
     //first check if article has pics
