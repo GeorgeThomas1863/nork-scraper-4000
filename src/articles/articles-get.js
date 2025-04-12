@@ -45,13 +45,14 @@ export const getNewArticleData = async (inputArray) => {
 
       //if article has pics download them (if not downloaded already)
       if (articleObj && articleObj.articlePicArray) {
+        console.log("HERE FAGGOT");
         await downloadPicsFS(articleObj.articlePicArray);
       }
 
       //store articleObj in article content collection
       const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
       await storeModel.storeUniqueURL();
-      console.log(articleObj);
+      // console.log(articleObj);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
