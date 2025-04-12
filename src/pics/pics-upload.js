@@ -34,10 +34,9 @@ export const postPicFS = async (picObj) => {
 
     //store uploaded
     await picModel.storeUniqueURL();
+
+    return uploadPicData;
   } catch (e) {
     console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
   }
-
-  //edit caption
-  return uploadPicData;
 };
