@@ -67,8 +67,33 @@ export const getNewArticleObj = async (article) => {
 
   //if article has pics download them (if not downloaded already)
   if (articleObj && articleObj.articlePicArray) {
-    await downloadPicsFS(articleObj.articlePicArray);
+    //check if any NOT in pics db
+    await checkArticlePics(articleObj.articlePicArray)
+  
   }
 
   return articleObj;
 };
+
+export const checkArticlePics = async (picArray) => {
+  const picNewArray = []
+  //loop through pics
+  for (let i = 0; i <picArray.length; i++){
+    const picObj = picArray[i]
+
+    //store any NOT in pic collection
+    const picNewModel = new dbModel(picObj, CONFIG.picCollection)
+    await picNewModel.storeUniqueURL() //will throw error if NOT unique
+
+    //check any NOT already downloaded
+    const picDownloadedModel = new dbModel(picObj, CONFIG.downloadedCollection)
+    await picDownloadedModel.urlNewCheck() //will throw error if NOT new
+    
+    //otherwise download it
+    const downloadData = await downloadPicFS(picObj)
+
+  }
+  
+
+}
+

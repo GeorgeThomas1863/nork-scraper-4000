@@ -17,7 +17,7 @@ export const downloadNewPics = async () => {
   const downloadModel = new dbModel(newPicParams, "");
   const downloadArray = await downloadModel.findNewURLs();
 
-  const runDownloadPicsFS = await downloadPicsFS(downloadArray);
+  const runDownloadPicsFS = await downloadPicArray(downloadArray);
   // console.log(runDownloadPicsFS);
   return runDownloadPicsFS;
 };
@@ -25,37 +25,60 @@ export const downloadNewPics = async () => {
 /**
  * Download pics array
  * @function downloadPicsFS
- * @returns number of new pics (length of newPicURLs array)
+ * @params picArray - Array of pic OBJECTS to download
+ * @returns items downloaded
  */
-export const downloadPicsFS = async (picArray) => {
-  //array of pic OBJs downloaded for tracking
+export const downloadPicArray = async (picArray) => {
+  if (!picArray) return null;
+
   const picDownloadedArray = [];
   for (let i = 0; i < picArray.length; i++) {
     try {
-      const pic = picArray[i];
-      //check if pic has been downloaded (mostly unnecessary)
-      const storePicModel = new dbModel(pic, CONFIG.downloadedCollection);
-      await storePicModel.urlNewCheck(); //throws error if pic already downloaded
-      //otherwise build params to download
-      const downloadPicParams = {
-        url: pic.url,
-        savePath: pic.picPath,
-      };
-      console.log(downloadPicParams);
-      //download pic
-      const downloadPicModel = new KCNA(downloadPicParams);
-      const downloadPicData = await downloadPicModel.downloadPicFS();
-      // console.log(downloadPicData);
-      //store pic was downloaded
-      const storePicDownloaded = await storePicModel.storeUniqueURL();
-      console.log(storePicDownloaded);
+      const picObj = picArray[i];
+      await downloadPicFS(picObj); //throws error if failed
 
-      //once done add to array for tracking
-      picDownloadedArray.push(pic);
+      //store pic downloaded
+      picDownloadedArray.push(picObj);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
   }
 
-  return picDownloadedArray.length;
+  return picDownloadedArray;
+};
+
+/**
+ * Downloads SINGLE pic from picOBJ
+ * @param {*} picObj OBJECT with pic url / picPath
+ * @returns picData
+ */
+export const downloadPicFS = async (picObj) => {
+  //first check if pic NOT already downloaded
+  const picModel = new dbModel(picObj, CONFIG.downloadedCollection);
+  await picModel.urlNewCheck(); //throws error if pic already downloaded
+
+  //build params
+  const picParams = {
+    url: picObj.url,
+    savePath: picObj.picPath,
+  };
+
+  //download Pic
+  const downloadModel = new KCNA(picParams);
+  const picData = await downloadModel.downloadPicFS();
+
+  //throw error if failed
+  if (!picData) {
+    const error = new Error("PIC DOWNLOAD FUCKED");
+    error.url = picObj.url;
+    error.function = "downloadPicFS";
+    throw error;
+  }
+
+  //store picObj
+  const storeObj = await picModel.storeUniqueURL();
+  console.log(storeObj);
+
+  //return data from download
+  return picData;
 };
