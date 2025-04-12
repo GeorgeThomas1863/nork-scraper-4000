@@ -56,14 +56,15 @@ export const uploadPicsTG = async (params) => {
  * @returns {Promise<Object>} Response data from Telegram API
  */
 export const editCaptionTG = async (inputObj, caption) => {
-  console.log("HERE FAGGOT");
-  console.log(inputObj);
   //build params
   const params = {
     chat_id: inputObj.result.chat.id,
     message_id: inputObj.result.message_id,
     caption: caption,
   };
+
+  console.log("HERE FAGGOT");
+  console.log(params);
 
   const tgModel = new TgReq(params);
 
