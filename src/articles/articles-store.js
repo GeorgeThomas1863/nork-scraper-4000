@@ -7,6 +7,8 @@ import dbModel from "../../models/db-model.js";
  * @returns {Promise<boolean>} True if storage was successful
  */
 export const storeArticleArray = async (inputArray, collection) => {
+  if (!inputArray) return null;
+
   for (let i = 0; i < inputArray.length; i++) {
     try {
       const storeModel = new dbModel({ url: inputArray[i] }, collection);
