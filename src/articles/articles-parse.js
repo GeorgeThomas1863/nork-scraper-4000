@@ -39,9 +39,6 @@ export const parseArticleListHtml = async (html) => {
     //GET DATE
     const dateElement = linkElements[i].querySelector(".publish-time");
     if (!dateElement) continue;
-    console.log("AHHHHHHHH2");
-    console.log(dateElement);
-
     const dateText = dateElement.textContent.trim();
     const articleDate = await parseDateElement(dateText);
 
@@ -65,7 +62,9 @@ export const parseArticleListHtml = async (html) => {
  *  @param {string} url - url of page being parsed
  * @returns {Promise<Object>} Article object with title, date, content and picture URL
  */
-export const parseArticleContentHtml = async (html, url) => {
+export const parseArticleContentHtml = async (html, listObj) => {
+  //use destructurign here ...listObj
+  const { url, articleId, date } = listObj;
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
@@ -85,8 +84,10 @@ export const parseArticleContentHtml = async (html, url) => {
 
   //build and return obj
   const articleObj = {
+    articleId: articleId,
     url: url,
     title: articleTitle,
+    date: date,
     content: articleContent,
     picURL: picURL,
   };

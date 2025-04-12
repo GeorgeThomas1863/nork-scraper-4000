@@ -22,10 +22,8 @@ export const getNewArticleURLs = async () => {
   console.log("ANDN NOW HERE FUCKER");
   console.log(articleListArray);
 
+  //sort by date and add in id
   const normalListArray = await addArticleId(articleListArray);
-
-  // console.log("AHHHHHHHHHHHH");
-  // console.log(normalListArray);
 
   //stores unique
   await storeArticleArray(normalListArray, CONFIG.articleListCollection);
@@ -57,7 +55,7 @@ export const getNewArticleData = async (inputArray) => {
 
   //loop through input array
   for (let i = 0; i < inputArray.length; i++) {
-    const listObj = inputArray[i].url;
+    const listObj = inputArray[i];
     try {
       const articleObj = await getNewArticleObj(listObj);
       if (!articleObj) continue;
@@ -68,6 +66,10 @@ export const getNewArticleData = async (inputArray) => {
 
       //if successful add to array
       articleDataArray.push(articleObj);
+
+      //check article pics (if any new download) AFTER storing Content
+      const newPicsArray = await checkArticlePics(articleObj);
+      console.log(newPicsArray.length); //new pics downloaded with article
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
@@ -84,18 +86,11 @@ export const getNewArticleData = async (inputArray) => {
  * @returns Object with data about kcna article and any pics it has
  */
 export const getNewArticleObj = async (listObj) => {
-  const articleModel = new KCNA({ url: listObj.url });
+  const articleModel = new KCNA(listObj);
   const articleHtml = await articleModel.getHTML();
 
   //parse article HTML (most of heavy lifting)
-  const articleObj = await parseArticleContentHtml(articleHtml, article);
-
-  //if article has pics download them (if not downloaded already)
-  if (articleObj && articleObj.articlePicArray) {
-    //check if any NOT in pics db
-    const newPics = await checkArticlePics(articleObj.articlePicArray);
-    console.log(newPics.length);
-  }
+  const articleObj = await parseArticleContentHtml(articleHtml, listObj);
 
   return articleObj;
 };
@@ -106,12 +101,15 @@ export const getNewArticleObj = async (listObj) => {
  * @param {*} picArray -picArray on the article Object
  * @returns array of new pics
  */
-export const checkArticlePics = async (picArray) => {
+export const checkArticlePics = async (articlePicObj) => {
+  if (!articlePicObj || !articlePicObj.articlePicArray) return null;
+  const { articlePicArray } = articlePicObj;
+
   const picNewArray = [];
   //loop through pics
-  for (let i = 0; i < picArray.length; i++) {
+  for (let i = 0; i < articlePicArray.length; i++) {
     try {
-      const picObj = picArray[i];
+      const picObj = articlePicArray[i];
 
       //store any NOT in pic collection
       const picNewModel = new dbModel(picObj, CONFIG.picCollection);
