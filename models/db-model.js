@@ -90,8 +90,8 @@ class dbModel {
   async findNewURLs() {
     // await db.dbConnect();
     //putting collections in dataObject for no reason, if hate self refactor rest of project like this
-    const collection1 = this.dataObject.collection1;
-    const collection2 = this.dataObject.collection2;
+    const collection1 = this.dataObject.collection1; //OLD THING (compare against)
+    const collection2 = this.dataObject.collection2; //NEW THING (process you are currently doing / handling)
     const distinctURLs = await db.dbGet().collection(collection2).distinct("url");
     const newURLsArray = await db
       .dbGet()

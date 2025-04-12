@@ -47,7 +47,7 @@ app.use(express.static("public"));
 // app.use(CONFIG.expressPicPath, express.static(CONFIG.savePicPathBase));
 app.use(routes);
 
-scrapeKCNA();
+runAutoScrape();
 
 /**
  * Connect to database and start the server if db works
