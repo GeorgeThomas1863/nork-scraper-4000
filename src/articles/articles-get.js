@@ -67,7 +67,6 @@ export const getNewArticleObj = async (article) => {
 
   //if article has pics download them (if not downloaded already)
   if (articleObj && articleObj.articlePicArray) {
-    console.log("HERE FAGGOT");
     await downloadPicsFS(articleObj.articlePicArray);
   }
 

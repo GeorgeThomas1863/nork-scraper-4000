@@ -43,3 +43,22 @@ export const getArticleId = async () => {
   //otherwise return stored value +1
   return articleIdStored + 1;
 };
+
+export const normalizeArticleInputs = async (inputObj) => {
+  const { url, date, title, content } = inputObj;
+  
+  //might have to change name of url here
+  const urlNormal = url.replace(/\./g, "[.]").replace(/:/g, "[:]");
+  const dateRaw = date;
+  const dateNormal = new Date(dateRaw).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
+  const titleNormal = `<b>${title}</b>`;
+
+  const outputObj = {
+    url: urlNormal,
+    date: dateNormal,
+    title: titleNormal,
+    content: content,
+  };
+
+  return outputObj;
+};

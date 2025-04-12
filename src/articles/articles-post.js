@@ -18,7 +18,7 @@ export const postNewArticles = async () => {
 
   // console.log(articleToPostArray);
   //no new articles
-  if (!articleToPostArray || articleToPostArray.length === 0) {
+  if (!articleToPostArray) {
     console.log("NO NEW ARTICLES");
     return null;
   }
@@ -33,28 +33,34 @@ export const postNewArticles = async () => {
  * @param {Array} articleArray array of article OBJs (from articleContent collection)
  * @returns number posted?
  */
-//posts BOTH articles and pics
+
+/**
+ * loops through articleContent collection, posting each item to TG
+ * @function postArticleArray
+ * @returns number of articles posted
+ */
 export const postArticleArray = async (articleArray) => {
-  //sorts array LOW TO HIGH
-  articleArray.sort((a, b) => a.myId - b.myId);
+  //sorts array FIRST, sorts from OLDEST TO NEWEST (by id low to high)
+  articleArray.sort((a, b) => a.articleId - b.articleId);
 
   //loop through array
   for (let i = 0; i < articleArray.length; i++) {
-    //first check if article has pics
-    const articleObj = articleArray[i];
-    console.log("AHHHHHHHHH3");
+    try {
+      //post each article obj (starting with pics)
+      const articleObj = articleArray[i];
+      const articlePostData = postArticleObj(articleObj);
 
-    const articlePostData = postArticleObj(articleObj);
+      //check if data returned, otehrwise store it
+      if (!articlePostData) return null;
+      const storeModel = new dbModel(articlePostData, CONFIG.articlePostedCollection);
+      await storeModel.storeUniqueURL();
 
-    // const articlePicsPosted = await postArticlePicArray(articleObj);
-    // console.log(articlePicsPosted);
-
-    // const articleContentPosted = await postArticleContent(articleObj);
-
-    //NEXT POST ARTICLE CONTENT
+      console.log("DONE YOU STUPID MOTHERFUCKER");
+      return articlePostData.length;
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
-  console.log("DONE YOU DUMB MOTHERFUCKER");
-  return articleArray.length;
 };
 
 /**
@@ -69,10 +75,21 @@ export const postArticleObj = async (articleObj) => {
 
   const picPostedArray = await postArticlePicArray(articlePicArray);
 
-  //POST ARTICLE HERE
+  console.log(picPostedArray);
 
-  // return articlePicArray.length;
-  return;
+  //POST ARTICLE HERE
+  //build postObj
+  const postObj = await normalizeArticleInputs(articleObj);
+  const articleLength = await postArticleTG(postObj);
+
+  //if article failed to post return if any pics posted (efficient way of writing it per claude)
+  if (!articleLength) return { picsPosted: picPostedArray } || null;
+
+  //otherwise build and return postObj
+  postObj.articleLength = articleLength;
+  if (picPostedArray?.length > 0) postObj.picsPosted = picPostedArray;
+
+  return postObj;
 };
 
 /**
@@ -120,3 +137,50 @@ export const postArticlePic = async (picObj) => {
   const postPicData = await postPicFS(picParams);
   return postPicData;
 };
+
+export const postArticleTG = async (inputObj) => {
+  const { url, date, title, content } = inputObj; //destructure everything
+  const maxLength = CONFIG.tgMaxLength - title.length - date.length - url.length - 100;
+  const chunkTotal = Math.ceil(content.length / maxLength);
+
+  //set  base params
+  const params = {
+    chat_id: CONFIG.articleSendToId,
+    parse_mode: "HTML",
+  };
+
+  //if short enough send normally
+  if (content.length < maxLength) {
+    params.text = title + "\n" + date + "\n\n" + content + "\n\n" + url;
+    await sendMessageChunkTG(params);
+    return content.length;
+  }
+
+  //otherwise send in chunks
+  let chunkCount = 0;
+  for (let i = 0; i < content.length; i += maxLength) {
+    chunkCount++;
+    const chunk = content.substring(i, i + maxLength);
+    //if first message
+    if (chunkCount === 1) {
+      params.text = title + "\n" + date + "\n\n" + chunk;
+      await sendMessageChunkTG(params);
+      continue;
+    }
+
+    //if last messagse
+    if (chunkCount === chunkTotal) {
+      params.text = chunk + "\n\n" + url;
+      await sendMessageChunkTG(params);
+      continue;
+    }
+
+    //otherwise send just chunk
+    params.text = chunk;
+    await sendMessageChunkTG(params);
+  }
+
+  return content.length;
+};
+
+export const postChunkTG = async (chunk) => {};

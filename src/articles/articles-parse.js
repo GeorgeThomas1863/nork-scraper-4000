@@ -87,8 +87,6 @@ export const parseArticleContentHtml = async (html, url) => {
   //if no article pics return here
   if (!picURL) return articleObj;
 
-  console.log("FUCK YOU FAGGOT");
-
   //otherwise get article pics before returning
   const articlePicArray = await parseArticlePicHtml(picURL);
   articleObj.articlePicArray = articlePicArray;
