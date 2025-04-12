@@ -29,7 +29,7 @@ export const postArticleArray = async (articleArray) => {
     //first check if article has pics
     const article = articleArray[i];
     console.log("AHHHHHHHHH3");
-    console.log(article);
+
     await postArticlePic(article);
 
     //NEXT POST ARTICLE CONTENT
@@ -38,14 +38,16 @@ export const postArticleArray = async (articleArray) => {
 
 export const postArticlePic = async (article) => {
   //if article has no pics return
-  if (!article || !article.picArray) return null;
+  if (!article || !article.articlePicArray || article.articlePicArray.length === 0) return null;
+  console.log("AHHHHHHH4");
 
   //otherwise build params
   const picParams = {
     chatId: CONFIG.articleSendToId,
-    url: article.url,
-    picPath: article.picPath,
+    url: article.articlePicArray.url,
+    picPath: article.articlePicArray.picPath,
   };
+  console.log(picParams);
 
   //post pic
   const postPicData = await postPicFS(picParams);
