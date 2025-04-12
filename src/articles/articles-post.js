@@ -27,25 +27,44 @@ export const postArticleArray = async (articleArray) => {
   //loop through array
   for (let i = 0; i < articleArray.length; i++) {
     //first check if article has pics
-    const article = articleArray[i];
+    const articleObj = articleArray[i];
     console.log("AHHHHHHHHH3");
 
-    await postArticlePic(article);
+    const articlePicsPosted = await postArticlePicArray(articleObj);
+    console.log(articlePicsPosted);
 
     //NEXT POST ARTICLE CONTENT
   }
+  console.log("DONE YOU DUMB MOTHERFUCKER");
+  return articleArray.length;
 };
 
-export const postArticlePic = async (article) => {
+//TAKES FULL ARTICLE OBJ AS INPUT
+export const postArticlePicArray = async (articleObj) => {
   //if article has no pics return
-  if (!article || !article.articlePicArray || article.articlePicArray.length === 0) return null;
+  if (!articleObj || !articleObj.articlePicArray || articleObj.articlePicArray.length === 0) return null;
   console.log("AHHHHHHH4");
 
-  //otherwise build params
+  //extract out article pic array
+  const { articlePicArray } = articleObj;
+
+  //loop through article Pic array
+  for (i = 0; i < articlePicArray.length; i++) {
+    //post individual pic
+    const postData = await postArticlePic(articlePicArray[i]);
+    console.log(postData);
+  }
+  return articlePicArray.length;
+};
+
+export const postArticlePic = async (articlePicItem) => {
+  const { url, picPath } = articlePicItem;
+
+  //build pic param
   const picParams = {
     chatId: CONFIG.articleSendToId,
-    url: article.articlePicArray.url,
-    picPath: article.articlePicArray.picPath,
+    url: url,
+    picPath: picPath,
   };
   console.log(picParams);
 
