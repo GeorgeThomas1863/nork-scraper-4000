@@ -49,7 +49,7 @@ export const postArticlePicArray = async (articleObj) => {
   const { articlePicArray } = articleObj;
 
   //loop through article Pic array
-  for (i = 0; i < articlePicArray.length; i++) {
+  for (let i = 0; i < articlePicArray.length; i++) {
     //post individual pic
     const postData = await postArticlePic(articlePicArray[i]);
     console.log(postData);
