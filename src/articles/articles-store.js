@@ -9,9 +9,13 @@ import dbModel from "../../models/db-model.js";
 export const storeArticleArray = async (inputArray, collection) => {
   if (!inputArray) return null;
 
+  console.log("FUCK ME0");
+  console.log(inputArray);
+
   for (let i = 0; i < inputArray.length; i++) {
+    const storeObj = inputArray[i];
     try {
-      const storeModel = new dbModel({ url: inputArray[i] }, collection);
+      const storeModel = new dbModel(storeObj, collection);
       await storeModel.storeUniqueURL();
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);

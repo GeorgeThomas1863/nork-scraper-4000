@@ -24,8 +24,8 @@ export const getNewArticleURLs = async () => {
 
   const normalListArray = await addArticleId(articleListArray);
 
-  console.log("AHHHHHHHHHHHH");
-  console.log(normalListArray);
+  // console.log("AHHHHHHHHHHHH");
+  // console.log(normalListArray);
 
   //stores unique
   await storeArticleArray(normalListArray, CONFIG.articleListCollection);
@@ -57,9 +57,9 @@ export const getNewArticleData = async (inputArray) => {
 
   //loop through input array
   for (let i = 0; i < inputArray.length; i++) {
-    const article = inputArray[i].url;
+    const listObj = inputArray[i].url;
     try {
-      const articleObj = await getNewArticleObj(article);
+      const articleObj = await getNewArticleObj(listObj);
       if (!articleObj) continue;
 
       //store it
@@ -83,8 +83,8 @@ export const getNewArticleData = async (inputArray) => {
  * @param {} article - (url for KCNA article)
  * @returns Object with data about kcna article and any pics it has
  */
-export const getNewArticleObj = async (article) => {
-  const articleModel = new KCNA({ url: article });
+export const getNewArticleObj = async (listObj) => {
+  const articleModel = new KCNA({ url: listObj.url });
   const articleHtml = await articleModel.getHTML();
 
   //parse article HTML (most of heavy lifting)
