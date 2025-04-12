@@ -18,7 +18,7 @@ export const downloadNewPics = async () => {
   const downloadArray = await downloadModel.findNewURLs();
 
   const runDownloadPicsFS = await downloadPicsFS(downloadArray);
-  console.log(runDownloadPicsFS);
+  // console.log(runDownloadPicsFS);
   return runDownloadPicsFS;
 };
 
@@ -45,7 +45,7 @@ export const downloadPicsFS = async (picArray) => {
       //download pic
       const downloadPicModel = new KCNA(downloadPicParams);
       const downloadPicData = await downloadPicModel.downloadPicFS();
-      console.log(downloadPicData);
+      // console.log(downloadPicData);
       //store pic was downloaded
       const storePicDownloaded = await storePicModel.storeUniqueURL();
       console.log(storePicDownloaded);
