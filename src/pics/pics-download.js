@@ -17,14 +17,14 @@ export const downloadNewPics = async () => {
   const downloadModel = new dbModel(newPicParams, "");
   const downloadArray = await downloadModel.findNewURLs();
 
-  const runDownloadPicsFS = await downloadPicArray(downloadArray);
-  // console.log(runDownloadPicsFS);
-  return runDownloadPicsFS;
+  const runDownloadPicArray = await downloadPicArray(downloadArray);
+  // console.log(runDownloadPicArray);
+  return runDownloadPicArray;
 };
 
 /**
  * Download pics array
- * @function downloadPicsFS
+ * @function downloadPicArray
  * @params picArray - Array of pic OBJECTS to download
  * @returns items downloaded
  */
@@ -35,6 +35,7 @@ export const downloadPicArray = async (picArray) => {
   for (let i = 0; i < picArray.length; i++) {
     try {
       const picObj = picArray[i];
+      console.log(picObj);
       await downloadPicFS(picObj); //throws error if failed
 
       //store pic downloaded
@@ -49,6 +50,7 @@ export const downloadPicArray = async (picArray) => {
 
 /**
  * Downloads SINGLE pic from picOBJ
+ * @function downloadPicFS
  * @param {*} picObj OBJECT with pic url / picPath
  * @returns picData
  */

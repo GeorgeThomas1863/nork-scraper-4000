@@ -5,8 +5,12 @@ import dbModel from "../../models/db-model.js";
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
 import { storeArticleArray } from "./articles-store.js";
 import { sortArticleDataArray } from "./articles-util.js";
-import { downloadPicsFS } from "../pics/pics-download.js";
 
+/**
+ * Finds new article URLs by parsing main KCNA article page and comparing with urls already downloaded
+ * @function getNewArticleURLs
+ * @returns array of new URLs
+ */
 export const getNewArticleURLs = async () => {
   //gets html from page with current list of articles
   const articleListModel = new KCNA({ url: CONFIG.articleListURL });
@@ -30,7 +34,12 @@ export const getNewArticleURLs = async () => {
   return newArticleURLs;
 };
 
-//input is array of objects
+/**
+ * Loops through array of url OBJECTs, goes to KCNA url, builds dataObj for EACH
+ * @function getNewArticleData
+ * @param {*} inputArray array of objects (each of which has url to kcna article)
+ * @returns array of OBJECTS with data about each KCNA article
+ */
 export const getNewArticleData = async (inputArray) => {
   //return if input empty (shouldnt happen)
   if (!inputArray || inputArray.length === 0) return;
@@ -58,6 +67,13 @@ export const getNewArticleData = async (inputArray) => {
   return normalArray.length;
 };
 
+/**
+ * Gets HTML from KCNA url and extracts ject content (passes heavy lifting to parseArticleContentHtml)
+ * Handles pics with article as well
+ * @function getNewArticleObj
+ * @param {} article - (url for KCNA article)
+ * @returns Object with data about kcna article and any pics it has
+ */
 export const getNewArticleObj = async (article) => {
   const articleModel = new KCNA({ url: article });
   const articleHtml = await articleModel.getHTML();
@@ -68,32 +84,39 @@ export const getNewArticleObj = async (article) => {
   //if article has pics download them (if not downloaded already)
   if (articleObj && articleObj.articlePicArray) {
     //check if any NOT in pics db
-    await checkArticlePics(articleObj.articlePicArray)
-  
+    const newPics = await checkArticlePics(articleObj.articlePicArray);
+    console.log(newPics.length);
   }
 
   return articleObj;
 };
 
+/**
+ * Checks whether any of the article pics are new, stores them AND downloads them if new
+ * @function checkArticlePics
+ * @param {*} picArray -picArray on the article Object
+ * @returns array of new pics
+ */
 export const checkArticlePics = async (picArray) => {
-  const picNewArray = []
+  const picNewArray = [];
   //loop through pics
-  for (let i = 0; i <picArray.length; i++){
-    const picObj = picArray[i]
+  for (let i = 0; i < picArray.length; i++) {
+    try {
+      const picObj = picArray[i];
 
-    //store any NOT in pic collection
-    const picNewModel = new dbModel(picObj, CONFIG.picCollection)
-    await picNewModel.storeUniqueURL() //will throw error if NOT unique
+      //store any NOT in pic collection
+      const picNewModel = new dbModel(picObj, CONFIG.picCollection);
+      await picNewModel.storeUniqueURL(); //will throw error if NOT unique
 
-    //check any NOT already downloaded
-    const picDownloadedModel = new dbModel(picObj, CONFIG.downloadedCollection)
-    await picDownloadedModel.urlNewCheck() //will throw error if NOT new
-    
-    //otherwise download it
-    const downloadData = await downloadPicFS(picObj)
+      //download if new (downloadPicFS checks if new)
+      await downloadPicFS(picObj);
 
+      //if all successful add to array
+      picNewArray.push(picObj);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
-  
 
-}
-
+  return picNewArray;
+};
