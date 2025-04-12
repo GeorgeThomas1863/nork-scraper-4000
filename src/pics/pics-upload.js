@@ -4,7 +4,7 @@ import dbModel from "../../models/db-model.js";
 import { uploadPicsTG, editCaptionTG } from "../tg-api.js";
 
 /**
- * Uploads SINGLE pic to tg
+ * Uploads SINGLE pic to tg (needs try catch)
  * @function postPicFS
  * @param {Object} picObj
  * @param picObj.url URL to pic (to check if new)
@@ -15,29 +15,24 @@ import { uploadPicsTG, editCaptionTG } from "../tg-api.js";
 export const postPicFS = async (picObj) => {
   if (!picObj || !picObj.url) return null;
 
-  try {
-    //check if pic new / NOT already uploaded
-    const picModel = new dbModel(picObj, CONFIG.uploadedCollection);
-    await picModel.urlNewCheck(); //will throw error if already posted
+  //check if pic new / NOT already uploaded
+  const picModel = new dbModel(picObj, CONFIG.uploadedCollection);
+  await picModel.urlNewCheck(); //will throw error if already posted
 
-    //otherwise post pic (use TG api for token check)
-    const uploadPicData = await uploadPicsTG(picObj);
+  //otherwise post pic (use TG api for token check)
+  const uploadPicData = await uploadPicsTG(picObj);
 
-    //build caption
-    const defangURL = picObj.url.replace(/\./g, "[.]").replace(/:/g, "[:]");
-    const normalURL = defangURL.substring(15);
-    const caption = "ID: " + picObj.kcnaId + "; URL: " + normalURL;
+  //build caption
+  const defangURL = picObj.url.replace(/\./g, "[.]").replace(/:/g, "[:]");
+  const normalURL = defangURL.substring(15);
+  const caption = "ID: " + picObj.kcnaId + "; URL: " + normalURL;
 
-    //edit caption
-    await editCaptionTG(uploadPicData, caption);
+  //edit caption
+  await editCaptionTG(uploadPicData, caption);
 
-    //store pic was uploaded
-    const storePicUploaded = await picModel.storeUniqueURL();
-    console.log(storePicUploaded);
+  //store uploaded
+  await picModel.storeUniqueURL();
 
-    //edit caption
-    return uploadPicData;
-  } catch (e) {
-    console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-  }
+  //edit caption
+  return uploadPicData;
 };

@@ -114,6 +114,10 @@ export const postArticlePic = async (picObj) => {
   picParams.chatId = CONFIG.articleSendToId;
 
   //post pic
-  const postPicData = await postPicFS(picParams);
-  return postPicData;
+  try {
+    const postPicData = await postPicFS(picParams);
+    return postPicData;
+  } catch (e) {
+    console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+  }
 };
