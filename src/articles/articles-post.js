@@ -17,6 +17,7 @@ export const postNewArticles = async () => {
   }
   //otherwise post article array
   const postArrayData = await postArticleArray(articleToPostArray);
+  return postArrayData;
 };
 
 //posts BOTH articles and pics
@@ -26,6 +27,8 @@ export const postArticleArray = async (articleArray) => {
     //first check if article has pics
     const article = articleArray[i];
     await postArticlePic(article);
+
+    //NEXT POST ARTICLE CONTENT
   }
 };
 

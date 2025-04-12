@@ -39,8 +39,15 @@ export const getNewArticleData = async (inputArray) => {
     const articleModel = new KCNA({ url: article });
     const articleHtml = await articleModel.getHTML();
 
+    //parse article HTML (most of heavy lifting)
     const articleObj = await parseArticleContentHtml(articleHtml, article);
 
+    //if article has pics download them (if not downloaded already)
+    if (articleObj && articleObj.articlePicArray) {
+      await downloadPicsFS(articleObj.articlePicArray);
+    }
+
+    //store articleObj in article content collection
     const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
     const storeTest = await storeModel.storeUniqueURL();
     console.log(storeTest);

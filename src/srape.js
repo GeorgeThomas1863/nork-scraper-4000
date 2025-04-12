@@ -10,9 +10,11 @@ export const runAutoScrape = async () => {
 export const scrapeKCNA = async () => {
   await runArticleScrape();
   await runPicsScrape();
+  console.log("FINISHED SCRAPING");
 };
 
 export const postToTG = async () => {
+  console.log("NOW POSTING ARTICLES (with their pics)");
   //will post articles ALONG with their pics
   await postNewArticles();
 };
