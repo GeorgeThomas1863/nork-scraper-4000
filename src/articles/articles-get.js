@@ -3,6 +3,8 @@ import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
+import { storeArticleArray } from "./articles-store.js";
+import { sortArticleDataArray } from "./articles-util.js";
 import { downloadPicsFS } from "../pics/pics-download.js";
 
 export const getNewArticleURLs = async () => {
@@ -33,29 +35,41 @@ export const getNewArticleData = async (inputArray) => {
   //return if input empty (shouldnt happen)
   if (!inputArray || inputArray.length === 0) return;
 
+  //add article data to content for storage
+  const articleDataArray = [];
+
   //loop through input array
   for (let i = 0; i < inputArray.length; i++) {
-    try {
-      const article = inputArray[i].url;
-      const articleModel = new KCNA({ url: article });
-      const articleHtml = await articleModel.getHTML();
-
-      //parse article HTML (most of heavy lifting)
-      const articleObj = await parseArticleContentHtml(articleHtml, article);
-
-      //if article has pics download them (if not downloaded already)
-      if (articleObj && articleObj.articlePicArray) {
-        console.log("HERE FAGGOT");
-        await downloadPicsFS(articleObj.articlePicArray);
-      }
-
-      //store articleObj in article content collection
-      const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
-      await storeModel.storeUniqueURL();
-      // console.log(articleObj);
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    }
+    const article = inputArray[i].url;
+    const articleObj = await getNewArticleObj(article);
+    if (!articleObj) continue;
+    articleDataArray.push(articleObj);
   }
-  return true;
+
+  //if no new articles return null
+  if (!articleDataArray || articleDataArray.length === 0) return null;
+
+  //normalize / sort array / add articleId
+  const normalArray = await sortArticleDataArray(articleDataArray);
+
+  //store normal array by looping through it
+  await storeArticleArray(normalArray, CONFIG.articleContentCollection);
+
+  return normalArray.length;
+};
+
+export const getNewArticleObj = async (article) => {
+  const articleModel = new KCNA({ url: article });
+  const articleHtml = await articleModel.getHTML();
+
+  //parse article HTML (most of heavy lifting)
+  const articleObj = await parseArticleContentHtml(articleHtml, article);
+
+  //if article has pics download them (if not downloaded already)
+  if (articleObj && articleObj.articlePicArray) {
+    console.log("HERE FAGGOT");
+    await downloadPicsFS(articleObj.articlePicArray);
+  }
+
+  return articleObj;
 };

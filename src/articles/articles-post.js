@@ -35,6 +35,9 @@ export const postNewArticles = async () => {
  */
 //posts BOTH articles and pics
 export const postArticleArray = async (articleArray) => {
+  //sorts array LOW TO HIGH
+  articleArray.sort((a, b) => a.myId - b.myId);
+
   //loop through array
   for (let i = 0; i < articleArray.length; i++) {
     //first check if article has pics
@@ -65,8 +68,6 @@ export const postArticleObj = async (articleObj) => {
   const { articlePicArray } = articleObj;
 
   const picPostedArray = await postArticlePicArray(articlePicArray);
-  // console.log(picPostedArray);
-  console.log("DONE POSTING PICS FOR ARTICLE");
 
   //POST ARTICLE HERE
 
@@ -85,6 +86,9 @@ export const postArticlePicArray = async (picArray) => {
   if (!picArray || picArray.length === 0) return null;
   //track pics posted
   const picPostedArray = [];
+
+  //sorts array LOW TO HIGH
+  picArray.sort((a, b) => a.kcnaId - b.kcnaId);
 
   //loop through article Pic array
   for (let i = 0; i < picArray.length; i++) {
@@ -115,12 +119,4 @@ export const postArticlePic = async (picObj) => {
 
   const postPicData = await postPicFS(picParams);
   return postPicData;
-
-  //post pic
-  // try {
-  //   const postPicData = await postPicFS(picParams);
-  //   return postPicData;
-  // } catch (e) {
-  //   console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-  // }
 };
