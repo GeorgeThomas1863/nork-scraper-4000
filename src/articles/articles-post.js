@@ -70,7 +70,8 @@ export const postArticleObj = async (articleObj) => {
 
   //POST ARTICLE HERE
 
-  return articlePicArray.length;
+  // return articlePicArray.length;
+  return;
 };
 
 /**
