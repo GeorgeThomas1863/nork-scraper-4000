@@ -25,7 +25,7 @@ import routes from "./routes/router.js";
 import * as db from "./data/db.js";
 
 //TEST, DELETE later
-import { scrapeKCNA } from "./src/srape.js";
+import { runAutoScrape } from "./src/srape.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
