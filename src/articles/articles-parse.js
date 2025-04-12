@@ -57,9 +57,6 @@ export const parseArticleContentHtml = async (html, url) => {
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
-  console.log("HERE!!!!!!!!");
-  console.log(html);
-
   // Extract the title - KCNA uses article-main-title class
   const titleElement = document.querySelector(".article-main-title");
   const articleTitle = titleElement?.textContent?.replace(/\s+/g, " ").trim();

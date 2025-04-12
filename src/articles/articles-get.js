@@ -49,8 +49,7 @@ export const getNewArticleData = async (inputArray) => {
 
     //store articleObj in article content collection
     const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
-    const storeTest = await storeModel.storeUniqueURL();
-    console.log(storeTest);
+    await storeModel.storeUniqueURL();
     console.log(articleObj);
   }
   return true;

@@ -25,8 +25,6 @@ export const getNewPicURLs = async () => {
   for (let i = startId; i <= stopId; i++) {
     for (let k = 0; k < 3; k++) {
       try {
-        console.log("ARRAY INDEX");
-        console.log(arrayIndex);
         const dateString = dateArray[arrayIndex];
         const url = CONFIG.picBaseURL + dateString + "/PIC00" + i + ".jpg";
         console.log(url);
