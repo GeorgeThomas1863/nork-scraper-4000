@@ -18,6 +18,7 @@ export const runPicsScrape = async () => {
   if (!newPicURLs || newPicURLs.length === 0) return null;
   //otherwise download new PICS (calc picArray to get ANY not downloaded)
   await downloadNewPics();
+  console.log("FINISHED DOWNLOADING NEW PICS")
   //return number of new articles
   return newPicURLs.length;
 };
