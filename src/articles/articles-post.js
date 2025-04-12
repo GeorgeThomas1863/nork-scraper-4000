@@ -3,6 +3,11 @@ import dbModel from "../../models/db-model.js";
 
 import { postPicFS } from "../pics/pics-upload.js";
 
+/**
+ * Finds new articles to post and posts them WITH their pics (posting pics first)
+ * @function postNewArticles
+ * @returns number of articles posted?
+ */
 export const postNewArticles = async () => {
   const postParams = {
     collection1: CONFIG.articleContentCollection, //list of article URLs (just updated)
@@ -22,6 +27,12 @@ export const postNewArticles = async () => {
   return postArrayData;
 };
 
+/**
+ * Loops through array of article OBJs, posting each (starting with the pics in that OBJ)
+ * @function postArticleArray
+ * @param {Array} articleArray array of article OBJs (from articleContent collection)
+ * @returns number posted?
+ */
 //posts BOTH articles and pics
 export const postArticleArray = async (articleArray) => {
   //loop through array
@@ -30,8 +41,12 @@ export const postArticleArray = async (articleArray) => {
     const articleObj = articleArray[i];
     console.log("AHHHHHHHHH3");
 
-    const articlePicsPosted = await postArticlePicArray(articleObj);
-    console.log(articlePicsPosted);
+    const articlePostData = postArticleObj(articleObj);
+
+    // const articlePicsPosted = await postArticlePicArray(articleObj);
+    // console.log(articlePicsPosted);
+
+    // const articleContentPosted = await postArticleContent(articleObj);
 
     //NEXT POST ARTICLE CONTENT
   }
@@ -39,34 +54,63 @@ export const postArticleArray = async (articleArray) => {
   return articleArray.length;
 };
 
-//TAKES FULL ARTICLE OBJ AS INPUT
-export const postArticlePicArray = async (articleObj) => {
-  //if article has no pics return
-  if (!articleObj || !articleObj.articlePicArray || articleObj.articlePicArray.length === 0) return null;
-  console.log("AHHHHHHH4");
-
+/**
+ * Takes 1 FULL article OBJ and posts it (starting with pics on article if any)
+ * @function postArticleObj
+ * @param {articleObj} articleObj
+ * @returns
+ */
+export const postArticleObj = async (articleObj) => {
   //extract out article pic array
   const { articlePicArray } = articleObj;
 
-  //loop through article Pic array
-  for (let i = 0; i < articlePicArray.length; i++) {
-    //post individual pic
-    const postData = await postArticlePic(articlePicArray[i]);
-    console.log(postData);
-  }
+  const picPostedArray = await postArticlePicArray(articlePicArray);
+  console.log(picPostedArray);
+  console.log("DONE POSTING PICS FOR ARTICLE");
+
+  //POST ARTICLE HERE
+
   return articlePicArray.length;
 };
 
-export const postArticlePic = async (articlePicItem) => {
-  const { url, picPath } = articlePicItem;
+/**
+ * Loops through array of article pics (if any), posting each
+ * @function postArticlePicArray
+ * @param {Array} picArray (articlePicArray)
+ * @returns array of picOBJs posted
+ */
+export const postArticlePicArray = async (picArray) => {
+  //if article has NO pics return null
+  if (!picArray || picArray.length === 0) return null;
+  //track pics posted
+  const picPostedArray = [];
 
-  //build pic param
-  const picParams = {
-    chatId: CONFIG.articleSendToId,
-    url: url,
-    picPath: picPath,
-  };
-  console.log(picParams);
+  //loop through article Pic array
+  for (let i = 0; i < picArray.length; i++) {
+    //post individual pic
+    const picObj = picArray[i];
+    const postData = await postArticlePic(picObj);
+    console.log(postData);
+    //if not posted, try next
+    if (!postData) continue;
+
+    //otherwise add to array
+    picPostedArray.push(picObj);
+  }
+
+  return picPostedArray;
+};
+
+/**
+ * Posts EACH article picOBJ, builds params, uses TG api to post (lets api deal with token)
+ * @function postArticlePic
+ * @param {} picObj OBJ with data for article PIC
+ * @returns data if pic posted, null if NOT
+ */
+export const postArticlePic = async (picObj) => {
+  //add tg chatId to params
+  const picParams = { ...picObj };
+  picParams.chatId = CONFIG.articleSendToId;
 
   //post pic
   const postPicData = await postPicFS(picParams);

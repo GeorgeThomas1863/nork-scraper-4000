@@ -30,6 +30,23 @@ export const sendMessageChunkTG = async (params) => {
 };
 
 /**
+ * TG sendPhoto API, posts images to TG channel / user, with auto token rotation
+ * @function uploadPicsTG
+ * @param {Object} params - Upload parameters
+ * @returns {Promise<Object>} Response data from Telegram API
+ */
+export const uploadPicsTG = async (params) => {
+  const tgModel = new TgReq(params);
+
+  //check token
+  let data = await tgModel.tgPicFS(tokenIndex);
+  const checkData = checkToken(data);
+  if (checkData) data = await tgModel.tgPicFS(tokenIndex); //run again
+
+  return data;
+};
+
+/**
  * TG editMessageCaption API; edits the caption of a previously pic / message
  * @function editCaptionTG
  * @param {Object} inputObj - Response object from a previous sendPhoto API call
@@ -51,23 +68,6 @@ export const editCaptionTG = async (inputObj, caption) => {
   let data = await tgModel.tgPost("editMessageCaption", tokenIndex);
   const checkData = checkToken(data);
   if (checkData) data = await tgModel.tgPost("editMessageCaption", tokenIndex); //if fucked run again
-
-  return data;
-};
-
-/**
- * TG sendPhoto API, posts images to TG channel / user, with auto token rotation
- * @function uploadPicsTG
- * @param {Object} params - Upload parameters
- * @returns {Promise<Object>} Response data from Telegram API
- */
-export const uploadPicsTG = async (params) => {
-  const tgModel = new TgReq(params);
-
-  //check token
-  let data = await tgModel.tgPicFS(tokenIndex);
-  const checkData = checkToken(data);
-  if (checkData) data = await tgModel.tgPicFS(tokenIndex); //run again
 
   return data;
 };
