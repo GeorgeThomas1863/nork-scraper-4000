@@ -12,7 +12,7 @@ export const postNewArticles = async () => {
   const postModel = new dbModel(postParams, "");
   const articleToPostArray = await postModel.findNewURLs();
 
-  console.log(articleToPostArray);
+  // console.log(articleToPostArray);
   //no new articles
   if (!articleToPostArray || articleToPostArray.length === 0) {
     console.log("NO NEW ARTICLES");

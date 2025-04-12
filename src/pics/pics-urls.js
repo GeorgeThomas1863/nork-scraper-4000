@@ -52,7 +52,7 @@ export const getNewPicURLs = async () => {
         //should all be unique so no try catch
         const storeModel = new dbModel(picObj, CONFIG.picCollection);
         await storeModel.storeUniqueURL();
-        console.log(picObj);
+        // console.log(picObj);
 
         newPicArray.push(picObj);
         break;
