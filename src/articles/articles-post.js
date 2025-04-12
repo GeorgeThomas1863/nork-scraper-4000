@@ -4,12 +4,15 @@ import dbModel from "../../models/db-model.js";
 import { postPicFS } from "../pics/pics-upload.js";
 
 export const postNewArticles = async () => {
+  console.log("AHHHHHHHH");
   const postParams = {
     collection1: CONFIG.articleContentCollection, //list of article URLs (just updated)
     collection2: CONFIG.articlePostedCollection, //list of articles content already downloaded
   };
   const postModel = new dbModel(postParams, "");
   const articleToPostArray = await postModel.findNewURLs();
+
+  console.log(articleToPostArray);
   //no new articles
   if (!articleToPostArray || articleToPostArray.length === 0) {
     console.log("NO NEW ARTICLES");
