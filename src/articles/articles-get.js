@@ -35,22 +35,26 @@ export const getNewArticleData = async (inputArray) => {
 
   //loop through input array
   for (let i = 0; i < inputArray.length; i++) {
-    const article = inputArray[i].url;
-    const articleModel = new KCNA({ url: article });
-    const articleHtml = await articleModel.getHTML();
+    try {
+      const article = inputArray[i].url;
+      const articleModel = new KCNA({ url: article });
+      const articleHtml = await articleModel.getHTML();
 
-    //parse article HTML (most of heavy lifting)
-    const articleObj = await parseArticleContentHtml(articleHtml, article);
+      //parse article HTML (most of heavy lifting)
+      const articleObj = await parseArticleContentHtml(articleHtml, article);
 
-    //if article has pics download them (if not downloaded already)
-    if (articleObj && articleObj.articlePicArray) {
-      await downloadPicsFS(articleObj.articlePicArray);
+      //if article has pics download them (if not downloaded already)
+      if (articleObj && articleObj.articlePicArray) {
+        await downloadPicsFS(articleObj.articlePicArray);
+      }
+
+      //store articleObj in article content collection
+      const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
+      await storeModel.storeUniqueURL();
+      console.log(articleObj);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
-
-    //store articleObj in article content collection
-    const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
-    await storeModel.storeUniqueURL();
-    console.log(articleObj);
   }
   return true;
 };
