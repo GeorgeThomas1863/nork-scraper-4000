@@ -3,6 +3,7 @@ import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
+import { downloadPicFS } from "../pics/pics-download.js";
 import { storeArticleArray } from "./articles-store.js";
 import { sortArticleDataArray } from "./articles-util.js";
 
