@@ -61,9 +61,6 @@ class TgReq {
     const token = tokenArray[tokenIndex];
     const url = `https://api.telegram.org/bot${token}/${command}`;
 
-    console.log("IN TG POST");
-    console.log(this.dataObject);
-
     //send data
     try {
       const response = await fetch(url, {
