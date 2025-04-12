@@ -15,6 +15,9 @@ export const parseArticleListHtml = async (html) => {
   const articleListArray = [];
   const urlConstant = "http://www.kcna.kp";
 
+  console.log(html)
+  return
+
   // Parse the HTML using JSDOM
   const dom = new JSDOM(html);
   const document = dom.window.document;

@@ -6,6 +6,9 @@ export const runArticleScrape = async () => {
   const newArticleURLs = await getNewArticleURLs();
   console.log("FINISHED GETTING ARTICLE URLs");
 
+  //REMOVE
+  return;
+
   //check if any new, return null if not
   if (!newArticleURLs || newArticleURLs.length === 0) return null;
   //otherwise download new articles

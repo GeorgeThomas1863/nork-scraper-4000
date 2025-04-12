@@ -20,6 +20,9 @@ export const getNewArticleURLs = async () => {
   //get the article list array from current articles html
   await parseArticleListHtml(articleListHtml);
 
+  //REMOVE
+  return
+
   //store the article list STORED ELSWEHERE
   // await storeArticleArray(articleListArray, CONFIG.articleListCollection);
 
