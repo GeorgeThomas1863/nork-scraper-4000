@@ -24,11 +24,12 @@ export const postNewArticles = async () => {
 
 //posts BOTH articles and pics
 export const postArticleArray = async (articleArray) => {
-  console.log("AHHHHHHHHHHHHHHHHHH2");
   //loop through array
   for (let i = 0; i < articleArray.length; i++) {
     //first check if article has pics
     const article = articleArray[i];
+    console.log("AHHHHHHHHH3");
+    console.log(article);
     await postArticlePic(article);
 
     //NEXT POST ARTICLE CONTENT
