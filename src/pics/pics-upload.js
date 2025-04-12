@@ -23,6 +23,9 @@ export const postPicFS = async (picObj) => {
     //otherwise post pic (use TG api for token check)
     const uploadPicData = await uploadPicsTG(picObj);
 
+    console.log("HERE FUCKHEAD CAPTION");
+    console.log(uploadPicData);
+
     //build caption
     const defangURL = picObj.url.replace(/\./g, "[.]").replace(/:/g, "[:]");
     const normalURL = defangURL.substring(15);

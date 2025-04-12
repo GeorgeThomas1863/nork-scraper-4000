@@ -65,7 +65,7 @@ export const postArticleObj = async (articleObj) => {
   const { articlePicArray } = articleObj;
 
   const picPostedArray = await postArticlePicArray(articlePicArray);
-  console.log(picPostedArray);
+  // console.log(picPostedArray);
   console.log("DONE POSTING PICS FOR ARTICLE");
 
   //POST ARTICLE HERE
@@ -91,7 +91,7 @@ export const postArticlePicArray = async (picArray) => {
     //post individual pic
     const picObj = picArray[i];
     const postData = await postArticlePic(picObj);
-    console.log(postData);
+    // console.log(postData);
     //if not posted, try next
     if (!postData) continue;
 
