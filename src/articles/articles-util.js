@@ -1,8 +1,9 @@
+import CONFIG from "../../config/scrape-config.js";
 import dbModel from "../../models/db-model.js";
 
-export const sortArticleDataArray = async (inputArray) => {
+export const addArticleId = async (inputArray) => {
   //return null on blank input
-  if (!inputArray || !inputArray.date || inputArray.length === 0) return null;
+  if (!inputArray) return null;
 
   const arrayNormal = [];
 
@@ -27,7 +28,7 @@ export const sortArticleDataArray = async (inputArray) => {
     normalObj.articleId = i + currentArticleId;
 
     // Add to the output array
-    arrayNormal.push(newObj);
+    arrayNormal.push(normalObj);
   }
 
   return arrayNormal;
@@ -35,7 +36,7 @@ export const sortArticleDataArray = async (inputArray) => {
 
 export const getArticleId = async () => {
   const dataModel = new dbModel({ keyToLookup: "articleId" }, CONFIG.articleContentCollection);
-  const articleIdStored = dataModel.findMaxId();
+  const articleIdStored = await dataModel.findMaxId();
 
   //if doesnt exists
   if (!articleIdStored) return 0;
@@ -46,7 +47,7 @@ export const getArticleId = async () => {
 
 export const normalizeArticleInputs = async (inputObj) => {
   const { url, date, title, content } = inputObj;
-  
+
   //might have to change name of url here
   const urlNormal = url.replace(/\./g, "[.]").replace(/:/g, "[:]");
   const dateRaw = date;

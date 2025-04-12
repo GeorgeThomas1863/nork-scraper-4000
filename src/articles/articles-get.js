@@ -5,7 +5,7 @@ import dbModel from "../../models/db-model.js";
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
 import { downloadPicFS } from "../pics/pics-download.js";
 import { storeArticleArray } from "./articles-store.js";
-import { sortArticleDataArray } from "./articles-util.js";
+import { addArticleId } from "./articles-util.js";
 
 /**
  * Finds new article URLs by parsing main KCNA article page and comparing with urls already downloaded
@@ -18,21 +18,25 @@ export const getNewArticleURLs = async () => {
   const articleListHtml = await articleListModel.getHTML();
 
   //get the article list array from current articles html
-  await parseArticleListHtml(articleListHtml);
+  const articleListArray = await parseArticleListHtml(articleListHtml);
+  console.log("ANDN NOW HERE FUCKER");
+  console.log(articleListArray);
 
-  //REMOVE
-  return
+  const normalListArray = await addArticleId(articleListArray);
 
-  //store the article list STORED ELSWEHERE
-  // await storeArticleArray(articleListArray, CONFIG.articleListCollection);
+  console.log("AHHHHHHHHHHHH");
+  console.log(normalListArray);
 
-  //collections being compared
+  //stores unique
+  await storeArticleArray(normalListArray, CONFIG.articleListCollection);
+
+  //check if any new
   const checkParams = {
     collection1: CONFIG.articleListCollection, //list of article URLs (just updated)
     collection2: CONFIG.articleContentCollection, //list of articles content already downloaded
   };
 
-  //pulls out the ones not already downloaded
+  //pulls out articles not already downloaded
   const checkModel = new dbModel(checkParams, "");
   const newArticleURLs = await checkModel.findNewURLs();
   return newArticleURLs;
@@ -46,7 +50,7 @@ export const getNewArticleURLs = async () => {
  */
 export const getNewArticleData = async (inputArray) => {
   //return if input empty (shouldnt happen)
-  if (!inputArray || inputArray.length === 0) return;
+  if (!inputArray) return null;
 
   //add article data to content for storage
   const articleDataArray = [];
@@ -54,21 +58,22 @@ export const getNewArticleData = async (inputArray) => {
   //loop through input array
   for (let i = 0; i < inputArray.length; i++) {
     const article = inputArray[i].url;
-    const articleObj = await getNewArticleObj(article);
-    if (!articleObj) continue;
-    articleDataArray.push(articleObj);
+    try {
+      const articleObj = await getNewArticleObj(article);
+      if (!articleObj) continue;
+
+      //store it
+      const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
+      await storeModel.storeUniqueURL(); //throws error if not unique
+
+      //if successful add to array
+      articleDataArray.push(articleObj);
+    } catch (e) {
+      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+    }
   }
 
-  //if no new articles return null
-  if (!articleDataArray || articleDataArray.length === 0) return null;
-
-  //normalize / sort array / add articleId
-  const normalArray = await sortArticleDataArray(articleDataArray);
-
-  //store normal array by looping through it
-  await storeArticleArray(normalArray, CONFIG.articleContentCollection);
-
-  return normalArray.length;
+  return articleDataArray;
 };
 
 /**

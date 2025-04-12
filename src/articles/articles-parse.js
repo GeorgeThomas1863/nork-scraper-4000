@@ -15,8 +15,8 @@ export const parseArticleListHtml = async (html) => {
   const articleListArray = [];
   const urlConstant = "http://www.kcna.kp";
 
-  console.log(html)
-  return
+  // console.log(html)
+  // return
 
   // Parse the HTML using JSDOM
   const dom = new JSDOM(html);
@@ -33,16 +33,25 @@ export const parseArticleListHtml = async (html) => {
 
   //loop through a tags and pull out hrefs
   for (let i = 0; i < linkElements.length; i++) {
-    try {
-      const href = linkElements[i].getAttribute("href");
-      const url = urlConstant + href; //build full url
-      //STORE HERE
-      const storeModel = new dbModel({ url: url }, CONFIG.articleListCollection);
-      await storeModel.storeUniqueURL();
-      articleListArray.push(url); //add to array
-    } catch (e) {
-      console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-    }
+    const href = linkElements[i].getAttribute("href");
+    const url = urlConstant + href; //build full url
+
+    //GET DATE
+    const dateElement = linkElements[i].querySelector(".publish-time");
+    if (!dateElement) continue;
+    console.log("AHHHHHHHH2");
+    console.log(dateElement);
+
+    const dateText = dateElement.textContent.trim();
+    const articleDate = await parseDateElement(dateText);
+
+    //build obj
+    const listObj = {
+      url: url,
+      date: articleDate,
+    };
+
+    articleListArray.push(listObj); //add to array
   }
 
   return articleListArray;
@@ -64,10 +73,6 @@ export const parseArticleContentHtml = async (html, url) => {
   const titleElement = document.querySelector(".article-main-title");
   const articleTitle = titleElement?.textContent?.replace(/\s+/g, " ").trim();
 
-  //extract date
-  const dateElement = document.querySelector(".publish-time");
-  const articleDate = await parseDateElement(dateElement);
-
   //get article PAGE (if exists) where all pics are displayed
   const mediaIconElement = document.querySelector(".media-icon");
   const hrefURL = mediaIconElement?.firstElementChild?.getAttribute("href");
@@ -82,7 +87,6 @@ export const parseArticleContentHtml = async (html, url) => {
   const articleObj = {
     url: url,
     title: articleTitle,
-    date: articleDate,
     content: articleContent,
     picURL: picURL,
   };
@@ -98,22 +102,36 @@ export const parseArticleContentHtml = async (html, url) => {
 };
 
 //breaks out date parsing
-export const parseDateElement = async (dateElement) => {
+export const parseDateElement = async (dateText) => {
   //return null if empty
-  if (!dateElement) return null;
+  if (!dateText) return null;
 
-  //extract date
-  const dateRaw = dateElement.textContent.replace('www.kcna.kp ', '').replace(/[\(\)]/g, '').trim(); //prettier-ignore
-  const year = parseInt(dateRaw.substring(0, 4));
-  const month = parseInt(dateRaw.substring(5, 7));
-  const day = parseInt(dateRaw.substring(8, 10));
+  const dateRaw = dateText.replace(/[\[\]]/g, "");
+
+  // Convert the date string (YYYY.MM.DD) to a JavaScript Date object, then split to arr
+  const dateArr = dateRaw.split(".");
+  const year = parseInt(dateArr[0]);
+  // JS months are 0-based (subtract 1 at end)
+  const month = parseInt(dateArr[1]);
+  const day = parseInt(dateArr[2]);
 
   // Validate the date; if fucked return null
   if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
 
-  // otherwise create and return a new Date object (month is 0-indexed in JavaScript)
   const articleDate = new Date(year, month - 1, day);
   return articleDate;
+
+  // //extract date OLD VERSION BELOW
+  // const dateRaw = dateElement.textContent.replace('www.kcna.kp ', '').replace(/[\(\)]/g, '').trim(); //prettier-ignore
+  // const year = parseInt(dateRaw.substring(0, 4));
+  // const month = parseInt(dateRaw.substring(5, 7));
+  // const day = parseInt(dateRaw.substring(8, 10));
+
+  // Validate the date; if fucked return null
+  // if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
+
+  // // otherwise create and return a new Date object (month is 0-indexed in JavaScript)
+  // const articleDate = new Date(year, month - 1, day);
 };
 
 export const parsePicURL = async (hrefURL) => {
