@@ -80,8 +80,7 @@ class KCNA {
   /**
    * Gets the content type of the resource at the specified URL (to check if PIC or not)
    * @function getDataType
-   * @returns {Promise<string|null>} The content-type header value, or null if not available
-   * @throws {Error} Logs the error to console if the request fails
+   * @returns {Promise<string|null>} if pic returns picObj, otherwise throws error
    */
   async getDataType() {
     const data = await fetch(this.dataObject.url);
@@ -99,7 +98,31 @@ class KCNA {
 
     //otherwise return the data type
     const dataType = data.headers.get("content-type");
-    return dataType;
+
+    //if not pic throw error
+    if (dataType !== "image/jpeg") {
+      const error = new Error("NOT A PIC");
+      error.url = this.dataObject.url;
+      error.function = "Get Data Type";
+      throw error;
+    }
+
+    //otherwise get data about pic and add to obj //TEST
+    const picSize = data.headers.get("content-length");
+    const picDate = data.headers.get("date");
+    const picEditDate = data.headers.get("last-modified");
+
+    const picObj = {
+      dateType: dataType,
+      picSize: picSize,
+      picDate: picDate,
+      picEditDate: picEditDate,
+    };
+
+    console.log("PIC OBJECT MODEL");
+    console.log(picObj);
+
+    return picObj;
   }
 
   /**
