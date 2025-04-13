@@ -44,7 +44,7 @@ export const getNewArticleURLs = async () => {
  */
 export const getNormalArticleList = async (inputArray) => {
   //return null on blank input
-  if (!inputArray) return null;
+  if (!inputArray || !inputArray.length) return null;
 
   //get the current article id, returns 0 if doesnt exist
   const arrayNormal = [];

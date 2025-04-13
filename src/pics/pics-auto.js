@@ -12,7 +12,7 @@ export const runPicsScrape = async () => {
   const newPicURLs = await getNewPicURLs();
 
   //check if any new, return null if not
-  if (!newPicURLs || newPicURLs.length === 0) return null;
+  if (!newPicURLs || !newPicURLs.length) return null;
 
   //otherwise download new PICS
   const picsDownloaded = await downloadPicArray(newPicURLs);

@@ -10,7 +10,7 @@ import dbModel from "../../models/db-model.js";
  * @returns items downloaded
  */
 export const downloadPicArray = async (picArray) => {
-  if (!picArray) return null;
+  if (!picArray || !picArray.length) return null;
 
   //loop through array
   const picDownloadedArray = [];
@@ -35,6 +35,8 @@ export const downloadPicArray = async (picArray) => {
  * @param {*} picObj - picObj to download
  */
 export const downloadNewPic = async (picObj) => {
+  if (!picObj) return null;
+  
   //first check if pic NOT already downloaded
   const picModel = new dbModel(picObj, CONFIG.downloadedCollection);
   await picModel.urlNewCheck(); //throws error if pic already downloaded
