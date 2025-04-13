@@ -110,13 +110,16 @@ class KCNA {
 
     //otherwise get data about pic and add to obj //TEST
     const picSize = data.headers.get("content-length");
+    const serverData = data.headers.get("server");
     const picDate = data.headers.get("date");
-    // const picEditDate = data.headers.get("last-modified");
+    const picEditDate = data.headers.get("last-modified");
 
     const picObj = {
       dateType: dataType,
+      serverData: serverData,
       picSize: picSize,
       picDate: picDate,
+      picEditDate: picEditDate,
     };
 
     console.log("PIC OBJECT MODEL");
