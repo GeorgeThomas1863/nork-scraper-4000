@@ -94,6 +94,9 @@ class KCNA {
       throw error;
     }
 
+    console.log("PIC DATA HEADERS");
+    console.log(data.headers);
+
     //otherwise return the data type
     const dataType = data.headers.get("content-type");
     return dataType;
@@ -117,16 +120,15 @@ class KCNA {
 
       const writer = fs.createWriteStream(savePath);
       const stream = res.data.pipe(writer);
-      const totalSize = parseInt(res.headers["content-length"], 10);
+      const picSize = parseInt(res.headers["content-length"], 10);
       let downloadedSize = 0;
 
-      console.log("DOWNLOADING PIC " + totalSize + "B");
-      console.log(totalSize);
+      console.log("DOWNLOADING PIC " + picSize + "B");
 
       //download shit
       res.data.on("data", (chunk) => {
         downloadedSize += chunk.length;
-        if (downloadedSize >= totalSize) {
+        if (downloadedSize >= picSize) {
           // console.log("All data chunks downloaded.");
           // console.log(picURL);
         }
@@ -137,7 +139,7 @@ class KCNA {
         stream.on("error", reject);
       });
 
-      return picURL;
+      return picSize;
     } catch (error) {
       error.url = picURL;
       error.function = "downloadPicFS";

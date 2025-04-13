@@ -104,7 +104,7 @@ export const buildPicObj = async (url, kcnaId, dateString) => {
     url: url,
     kcnaId: kcnaId,
     dateString: dateString,
-    picPath: CONFIG.savePicPathBase + i + ".jpg",
+    picPath: CONFIG.savePicPathBase + kcnaId + ".jpg",
   };
 
   //store it, throws error if not new
