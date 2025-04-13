@@ -1,6 +1,9 @@
 //TO DO
 
-//FINISH PIC UPLOADING (ADD EDIT CAPTIONS, etc)
+// KEEP GOING WITH EXTRACTING PIC OBJECT data
+// USE pic size to compare if new (the point of all this)
+
+// //FINISH PIC UPLOADING (ADD EDIT CAPTIONS, etc)
 
 //(DO LATER) Make a separate branch using puppeteer to pull pics (will let you get more info from server)
 
