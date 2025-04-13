@@ -72,11 +72,6 @@ export const parseArticleContentHtml = async (html, listObj) => {
   const titleElement = document.querySelector(".article-main-title");
   const articleTitle = titleElement?.textContent?.replace(/\s+/g, " ").trim();
 
-  //get article PAGE (if exists) where all pics are displayed
-  const mediaIconElement = document.querySelector(".media-icon");
-  const hrefURL = mediaIconElement?.firstElementChild?.getAttribute("href");
-  const picURL = await parsePicURL(hrefURL);
-
   //break out content parsing
   const contentElement = document.querySelector(".content-wrapper");
   const contentArray = contentElement.querySelectorAll("p"); //array of paragraph elements
@@ -89,14 +84,19 @@ export const parseArticleContentHtml = async (html, listObj) => {
     title: articleTitle,
     date: date,
     content: articleContent,
-    picURL: picURL,
   };
+
+  //get article PAGE (if exists) where all pics are displayed
+  const mediaIconElement = document.querySelector(".media-icon");
+  const hrefURL = mediaIconElement?.firstElementChild?.getAttribute("href");
+  const picURL = await parsePicURL(hrefURL);
 
   //if no article pics return here
   if (!picURL) return articleObj;
 
   //otherwise get article pics before returning
   const articlePicArray = await parseArticlePicHtml(picURL);
+  articleObj.picURL = picURL;
   articleObj.articlePicArray = articlePicArray;
 
   return articleObj;
@@ -121,18 +121,6 @@ export const parseDateElement = async (dateText) => {
 
   const articleDate = new Date(year, month - 1, day);
   return articleDate;
-
-  // //extract date OLD VERSION BELOW
-  // const dateRaw = dateElement.textContent.replace('www.kcna.kp ', '').replace(/[\(\)]/g, '').trim(); //prettier-ignore
-  // const year = parseInt(dateRaw.substring(0, 4));
-  // const month = parseInt(dateRaw.substring(5, 7));
-  // const day = parseInt(dateRaw.substring(8, 10));
-
-  // Validate the date; if fucked return null
-  // if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
-
-  // // otherwise create and return a new Date object (month is 0-indexed in JavaScript)
-  // const articleDate = new Date(year, month - 1, day);
 };
 
 export const parsePicURL = async (hrefURL) => {
