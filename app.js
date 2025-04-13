@@ -2,6 +2,8 @@
 
 //FINISH PIC UPLOADING (ADD EDIT CAPTIONS, etc)
 
+//(DO LATER) Make a separate branch using puppeteer to pull pics (will let you get more info from server)
+
 //TEST DOWNLOAD PICS WORKS
 //BUILD UPLOAD TO TG, MAKE IT COMBO BY DEFAULT
 
