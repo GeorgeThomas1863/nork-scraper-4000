@@ -115,6 +115,7 @@ class KCNA {
     const picObj = {
       dateType: dataType,
       picSize: picSize,
+      picDate: picDate,
     };
 
     console.log("PIC OBJECT MODEL");
