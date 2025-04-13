@@ -13,7 +13,7 @@ import KCNA from "../../models/kcna-model.js";
 export const checkHeader = async (inputURL) => {
   //http req
   const kcnaModel = new KCNA({ url: inputURL });
-  const dataType = await kcnaModel.getDataType();
+  const dataType = await kcnaModel.getPicData();
   console.log("DATA TYPE");
   console.log(dataType);
 

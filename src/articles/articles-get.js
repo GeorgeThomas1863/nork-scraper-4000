@@ -150,12 +150,24 @@ export const checkArticlePics = async (articleObj) => {
     try {
       const picObj = articlePicArray[i];
 
+      //check if already have pic
+      const newModel = new dbModel(picObj, CONFIG.picCollection);
+      await newModel.urlNewCheck();
+
+      //throws error if NOT a pic
+      const kcnaModel = new KCNA(picObj);
+      const picData = await kcnaModel.getPicData();
+
+      console.log(picData);
+
+      //check if pic exists
+
       //store any NOT in pic collection
       const picNewModel = new dbModel(picObj, CONFIG.picCollection);
       await picNewModel.storeUniqueURL(); //will throw error if NOT unique
 
-      //download if new (downloadPicFS checks if new)
-      await downloadPicFS(picObj);
+      // DONT FUCKING DOWNLOAD
+      // await downloadPicFS(picObj);
 
       //if all successful add to array
       picNewArray.push(picObj);

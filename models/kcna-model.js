@@ -82,7 +82,8 @@ class KCNA {
    * @function getDataType
    * @returns {Promise<string|null>} if pic returns picObj, otherwise throws error
    */
-  async getDataType() {
+  // async getDataType() {
+  async getPicData() {
     const data = await fetch(this.dataObject.url);
 
     //if URL doesnt exist / return headers throw error
@@ -119,7 +120,7 @@ class KCNA {
     };
 
     console.log("PIC OBJECT MODEL");
-    console.log(picObj);
+    // console.log(picObj);
 
     return picObj;
   }
