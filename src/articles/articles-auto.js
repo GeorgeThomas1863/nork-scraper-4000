@@ -1,4 +1,4 @@
-import { getNewArticleURLs, getNewArticleData } from "./articles-get.js";
+import { getNewArticleURLs, getNewArticleContent } from "./articles-get.js";
 
 export const runArticleScrape = async () => {
   console.log("STARTING ARTICLE SCRAPE");
@@ -6,12 +6,13 @@ export const runArticleScrape = async () => {
   const newArticleURLs = await getNewArticleURLs();
   console.log("FINISHED GETTING ARTICLE URLs");
 
-  //check if any new, return null if not
-  if (!newArticleURLs) return null;
+  //check if any new, return null if not (returns array of objs, so length needed to check)
+  if (!newArticleURLs || !newArticleURLs.length) return null;
 
   //otherwise download new articles
-  await getNewArticleData(newArticleURLs);
-  console.log("FINISHED GETTING NEW ARTICLE DATA");
+  const newArticleContent = await getNewArticleContent(newArticleURLs);
+  console.log("FINISHED GETTING CONTENT FOR THIS MANY NEW ARTICLES:");
+  console.log(newArticleContent.length);
 
   //return number of new articles
   return newArticleURLs.length;

@@ -1,17 +1,20 @@
 import CONFIG from "../../config/scrape-config.js";
 import dbModel from "../../models/db-model.js";
 
-export const addArticleId = async (inputArray) => {
+/**
+ * Function that sorts an array of article OBJECTS by DATE
+ * @param {} inputArray
+ * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
+ */
+export const sortArticleArray = async (inputArray) => {
   //return null on blank input
-  if (!inputArray) return null;
+  if (!inputArray || !inputArray.length) return null;
 
-  const arrayNormal = [];
-
-  //get the current article id, returns 0 if doesnt exist
-  const currentArticleId = await getArticleId();
+  // Create a copy of the array to avoid modifying the original
+  const sortArray = [...inputArray];
 
   //sort input array by DATE OLDEST to NEWEST
-  inputArray.sort((a, b) => {
+  sortArray.sort((a, b) => {
     // Convert datetime strings to Date objects if needed
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
@@ -19,19 +22,7 @@ export const addArticleId = async (inputArray) => {
     return dateA - dateB;
   });
 
-  // loop through input array (of OBJs) adding articleId identifier
-  for (let i = 0; i < inputArray.length; i++) {
-    const inputObj = inputArray[i];
-    const normalObj = { ...inputObj };
-
-    //add in articleId
-    normalObj.articleId = i + currentArticleId;
-
-    // Add to the output array
-    arrayNormal.push(normalObj);
-  }
-
-  return arrayNormal;
+  return sortArray;
 };
 
 export const getArticleId = async () => {
