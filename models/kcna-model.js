@@ -80,31 +80,33 @@ class KCNA {
   /**
    * Gets the content type of the resource at the specified URL (to check if PIC or not)
    * @function getDataType
+   * @param picURL (as value for url in obj)
    * @returns {Promise<string|null>} if pic returns picObj, otherwise throws error
    */
   // async getDataType() {
   async getPicData() {
-    const data = await fetch(this.dataObject.url);
+    const picURL = this.dataObject.url;
+    const res = await fetch(picURL);
 
     //if URL doesnt exist / return headers throw error
-    if (!data || !data.headers) {
+    if (!res || !res.headers) {
       const error = new Error("URL DOESNT EXIST");
-      error.url = this.dataObject.url;
-      error.function = "Get Data Type";
+      error.url = picURL;
+      error.function = "getPicData KCNA MODEL";
       throw error;
     }
 
     console.log("PIC DATA HEADERS");
-    console.log(data.headers);
+    console.log(res.headers);
 
     //otherwise return the data type
-    const dataType = data.headers.get("content-type");
+    const dataType = res.headers.get("content-type");
 
     //if not pic throw error
     if (dataType !== "image/jpeg") {
       const error = new Error("NOT A PIC");
-      error.url = this.dataObject.url;
-      error.function = "Get Data Type";
+      error.url = picURL;
+      error.function = "getPicData KCNA MODEL";
       throw error;
     }
 
@@ -116,7 +118,7 @@ class KCNA {
     const picEditDate = data.headers.get("last-modified");
 
     const picObj = {
-      url: this.dataObject.url,
+      url: picURL,
       dateType: dataType,
       serverData: serverData,
       eTag: eTag,
@@ -126,7 +128,7 @@ class KCNA {
     };
 
     console.log("PIC OBJECT MODEL");
-    // console.log(picObj);
+    console.log(picObj);
 
     return picObj;
   }

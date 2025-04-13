@@ -1,7 +1,8 @@
 import CONFIG from "../../config/scrape-config.js";
 import dbModel from "../../models/db-model.js";
+import KCNA from "../../models/kcna-model.js";
 
-import { getDateArray, getCurrentKcnaId, checkHeader } from "./pics-util.js";
+import { getDateArray, getCurrentKcnaId } from "./pics-util.js";
 
 /**
  * Re-Written get new pics checker, no better, just diff, properly iterates date array
@@ -18,7 +19,7 @@ export const getNewPicURLs = async () => {
   const dateArray = await getDateArray();
 
   //run loop (return just for checking)
-  const newPicArray = await runNewPicLoop(startId, stopId, dateArray);
+  const newPicArray = await runGetPicLoop(startId, stopId, dateArray);
   console.log("FINISHED GETTING FOLLOWING NEW PICS:");
   console.log(newPicArray);
 
@@ -35,12 +36,12 @@ export const getNewPicURLs = async () => {
 
 /**
  * Runs the actual loop to check for new pics (slightly less r slured)
- * @function runNewPicLoop
+ * @function runGetPicLoop
  * @param {*} startId - kcnaId to start loop
  * @param {*} stopId - kcnaId to stop loop
  * @returns array of new pic OBJECTS
  */
-export const runNewPicLoop = async (startId, stopId, dateArray) => {
+export const runGetPicLoop = async (startId, stopId, dateArray) => {
   const newPicArray = [];
 
   //loop
@@ -52,19 +53,17 @@ export const runNewPicLoop = async (startId, stopId, dateArray) => {
         const url = CONFIG.picBaseURL + dateString + "/PIC00" + i + ".jpg";
         console.log(url);
 
-        //throws error if already have pic, null if doesnt exist
-        const newPic = await checkPicNew(url);
+        //checks if new, and stores it, throws error if already have, null if doesnt exists
+        const picObj = await buildPicObj(url, i, dateString);
 
         //iterate date array if doesnt exist (check again)
-        if (!newPic) {
+        if (!picObj) {
           dateIndex++;
           if (dateIndex > 2) dateIndex = 0;
           continue;
         }
 
-        //otherwise build picOBJ and store it here
-        const picObj = await buildPicObj(url, i, dateString);
-        console.log(picObj);
+        //if successful push to array for tracking
         newPicArray.push(picObj);
         break;
       } catch (e) {
@@ -79,38 +78,50 @@ export const runNewPicLoop = async (startId, stopId, dateArray) => {
 };
 
 /**
- * Checks whether url is already stored (throws error), AND if its a pic (returns null)
- * @function checkPicNew
- * @param {*} url - url to pic
- * @returns - if pic new returns pic headers, throws error if already stored, null if NOT pic
- */
-export const checkPicNew = async (url) => {
-  //check if new, will throw error if NOT new
-  const checkModel = new dbModel({ url: url }, CONFIG.picCollection);
-  await checkModel.urlNewCheck();
-
-  //returns data type if pic, NULL if NOT pic
-  const newPic = await checkHeader(url);
-  return newPic;
-};
-
-/**
- * Builds AND stores the picObj (mostly unnecessary but whatever)
+ * Builds AND stores the picObj
  * @function buildPicObj
  * @returns finished picObj
  */
-export const buildPicObj = async (url, kcnaId, dateString) => {
-  const picObj = {
-    url: url,
-    kcnaId: kcnaId,
-    dateString: dateString,
-    picPath: CONFIG.savePicPathBase + kcnaId + ".jpg",
-  };
+export const buildPicObj = async (picURL, kcnaId, dateString) => {
+  //check if pic new, throws error if not new
+  const checkModel = new dbModel({ url: picURL }, CONFIG.picCollection);
+  await checkModel.urlNewCheck();
+
+  const picObj = await getPicData(picURL);
+
+  //add other data to picObj
+  const returnObj = { ...picObj };
+  returnObj.kcnaId = kcnaId;
+  returnObj.dateString = dateString;
+  returnObj.picPath = CONFIG.savePicPathBase + kcnaId + ".jpg";
 
   //store it, throws error if not new
   const storeModel = new dbModel(picObj, CONFIG.picCollection);
-  await storeModel.storeUniqueURL();
+  const storeTest = await storeModel.storeUniqueURL();
+  console.log(storeTest);
+  console.log("FINISHED PIC OBJECT");
+  console.log(picObj);
 
   //if successful return picObj
   return picObj;
+};
+
+/**
+ * checks picURL header for no reason
+ * @function getPicData
+ * @param url (url to be checked)
+ * @returns picObj with pic data from model
+ */
+export const getPicData = async (picURL) => {
+  //http req
+  const kcnaModel = new KCNA({ url: picURL });
+  const picObj = await kcnaModel.getPicData();
+  console.log("DATA TYPE");
+  console.log(dataType);
+
+  //if pic return data
+  if (dataType === "image/jpeg") return dataType;
+
+  //othewise return null
+  return null;
 };

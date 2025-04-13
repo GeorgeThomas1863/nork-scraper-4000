@@ -1,28 +1,5 @@
 import CONFIG from "../../config/scrape-config.js";
-
 import dbModel from "../../models/db-model.js";
-import KCNA from "../../models/kcna-model.js";
-
-/**
- * checks picURL header for no reason
- * @function checkHeader
- * @param url (url to be checked)
- * @returns true if new / exists, throws error if not
- */
-//FUCKING USELESS
-export const checkHeader = async (inputURL) => {
-  //http req
-  const kcnaModel = new KCNA({ url: inputURL });
-  const dataType = await kcnaModel.getPicData();
-  console.log("DATA TYPE");
-  console.log(dataType);
-
-  //if pic return data
-  if (dataType === "image/jpeg") return dataType;
-
-  //othewise return null
-  return null;
-};
 
 /**
  * Builds an array of date strings (YYYYMM) for current month / year and adjacent months (needed for kcna url format)

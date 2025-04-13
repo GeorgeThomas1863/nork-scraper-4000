@@ -3,8 +3,8 @@ import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
-import { downloadPicFS } from "../pics/pics-download.js";
 import { sortArticleArray, getArticleId } from "./articles-util.js";
+import { buildPicObj } from "../pics/pics-urls.js";
 
 /**
  * Finds new article URLs by parsing main KCNA article page and comparing with urls already downloaded
@@ -144,32 +144,17 @@ export const checkArticlePics = async (articleObj) => {
   const { articlePicArray } = articleObj;
   if (!articleObj.articlePicArray || !articleObj.articlePicArray.length) return null;
 
-  const picNewArray = [];
   //loop through pics
+  const picNewArray = [];
   for (let i = 0; i < articlePicArray.length; i++) {
     try {
-      const picObj = articlePicArray[i];
+      const articlePicObj = articlePicArray[i];
+      const { url, kcnaId, dateString } = articlePicObj;
 
-      //check if already have pic
-      const newModel = new dbModel(picObj, CONFIG.picCollection);
-      await newModel.urlNewCheck();
+      //checks if pic new / exists, stores it if it is, throws error if not
+      const picObj = await buildPicObj(url, kcnaId, dateString);
 
-      //throws error if NOT a pic
-      const kcnaModel = new KCNA(picObj);
-      const picData = await kcnaModel.getPicData();
-
-      console.log(picData);
-
-      //check if pic exists
-
-      //store any NOT in pic collection
-      const picNewModel = new dbModel(picObj, CONFIG.picCollection);
-      await picNewModel.storeUniqueURL(); //will throw error if NOT unique
-
-      // DONT FUCKING DOWNLOAD
-      // await downloadPicFS(picObj);
-
-      //if all successful add to array
+      //if all successful add to array (for tracking)
       picNewArray.push(picObj);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
