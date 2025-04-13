@@ -116,6 +116,7 @@ class KCNA {
     const picEditDate = data.headers.get("last-modified");
 
     const picObj = {
+      url: this.dataObject.url,
       dateType: dataType,
       serverData: serverData,
       eTag: eTag,
