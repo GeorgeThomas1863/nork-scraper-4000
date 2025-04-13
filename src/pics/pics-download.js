@@ -4,25 +4,6 @@ import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
 /**
- * Finds new pics to be downloaded, passes as array of OBJs for downloading
- * @function downloadNewPics
- * @returns number downloaded(array length)
- */
-export const downloadNewPics = async () => {
-  //get pics that havent been downloaded (are new)
-  const newPicParams = {
-    collection1: CONFIG.picCollection, //old thing, to compare against
-    collection2: CONFIG.downloadedCollection, //new thing, what this funct is doing
-  };
-  const downloadModel = new dbModel(newPicParams, "");
-  const downloadArray = await downloadModel.findNewURLs();
-
-  const runDownloadPicArray = await downloadPicArray(downloadArray);
-  // console.log(runDownloadPicArray);
-  return runDownloadPicArray;
-};
-
-/**
  * Download pics array
  * @function downloadPicArray
  * @params picArray - Array of pic OBJECTS to download
@@ -31,14 +12,15 @@ export const downloadNewPics = async () => {
 export const downloadPicArray = async (picArray) => {
   if (!picArray) return null;
 
+  //loop through array
   const picDownloadedArray = [];
   for (let i = 0; i < picArray.length; i++) {
     try {
       const picObj = picArray[i];
       console.log(picObj);
-      await downloadPicFS(picObj); //throws error if failed
+      await downloadNewPic(picObj); //throws error if failed
 
-      //store pic downloaded
+      //if successful, track pic downloaded
       picDownloadedArray.push(picObj);
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
@@ -49,16 +31,37 @@ export const downloadPicArray = async (picArray) => {
 };
 
 /**
+ * Checks if pic is New, downloads it if it is, then stores it if successful
+ * @param {*} picObj - picObj to download
+ */
+export const downloadNewPic = async (picObj) => {
+  //first check if pic NOT already downloaded
+  const picModel = new dbModel(picObj, CONFIG.downloadedCollection);
+  await picModel.urlNewCheck(); //throws error if pic already downloaded
+
+  //if new download
+  const picData = await downloadPicFS(picObj);
+
+  //throw error if pic download failed
+  if (!picData) {
+    const error = new Error("PIC DOWNLOAD FUCKED");
+    error.url = picObj.url;
+    error.function = "downloadNewPic";
+    throw error;
+  }
+
+  //otherwise, store picObj as downloaded
+  const storeObj = await picModel.storeUniqueURL();
+  console.log(storeObj);
+};
+
+/**
  * Downloads SINGLE pic from picOBJ
  * @function downloadPicFS
  * @param {*} picObj OBJECT with pic url / picPath
  * @returns picData
  */
 export const downloadPicFS = async (picObj) => {
-  //first check if pic NOT already downloaded
-  const picModel = new dbModel(picObj, CONFIG.downloadedCollection);
-  await picModel.urlNewCheck(); //throws error if pic already downloaded
-
   //build params
   const picParams = {
     url: picObj.url,
@@ -68,18 +71,6 @@ export const downloadPicFS = async (picObj) => {
   //download Pic
   const downloadModel = new KCNA(picParams);
   const picData = await downloadModel.downloadPicFS();
-
-  //throw error if failed
-  if (!picData) {
-    const error = new Error("PIC DOWNLOAD FUCKED");
-    error.url = picObj.url;
-    error.function = "downloadPicFS";
-    throw error;
-  }
-
-  //store picObj
-  const storeObj = await picModel.storeUniqueURL();
-  console.log(storeObj);
 
   //return data from download
   return picData;
