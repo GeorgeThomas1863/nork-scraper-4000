@@ -4,6 +4,8 @@ import CONFIG from "../../config/scrape-config.js";
 import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
+import { buildPicObj } from "../pics/pics-urls.js";
+
 /**
  * Parses the main page HTML to extract a list of article URLs
  * @function parseArticleListHtml
@@ -30,6 +32,8 @@ export const parseArticleListHtml = async (html) => {
 
   // Find all anchor tags within the article-link element (puts them in an)
   const linkElements = articleLinkElement.querySelectorAll("a");
+  console.log("LINK ELEMENTS");
+  console.log(linkElements[0]);
 
   //loop through a tags and pull out hrefs
   for (let i = 0; i < linkElements.length; i++) {
@@ -88,17 +92,18 @@ export const parseArticleContentHtml = async (html, listObj) => {
 
   //get article PAGE (if exists) where all pics are displayed
   const mediaIconElement = document.querySelector(".media-icon");
-  const hrefURL = mediaIconElement?.firstElementChild?.getAttribute("href");
-  const picURL = await parsePicURL(hrefURL);
+  const picPageHref = mediaIconElement?.firstElementChild?.getAttribute("href");
 
-  //if no article pics return here
-  if (!picURL) return articleObj;
+  //return article obj if no pic
+  if (!picPageHref) return articleObj;
 
-  //otherwise get article pics before returning
-  const articlePicArray = await parseArticlePicHtml(picURL);
-  articleObj.picURL = picURL;
+  //otherwise build pic / pic array
+  const picPageURL = "http://www.kcna.kp" + picPageHref;
+  const articlePicArray = await parsePicPageHtml(picPageURL);
+
+  //add to object and return
+  articleObj.picPageURL = picPageURL;
   articleObj.articlePicArray = articlePicArray;
-
   return articleObj;
 };
 
@@ -123,14 +128,6 @@ export const parseDateElement = async (dateText) => {
   return articleDate;
 };
 
-export const parsePicURL = async (hrefURL) => {
-  //if empty input return null
-  if (!hrefURL) return null;
-
-  //otherwise return the string
-  return "http://www.kcna.kp" + hrefURL;
-};
-
 export const parseArticleContent = async (contentArray) => {
   let paragraphArray = [];
 
@@ -143,10 +140,15 @@ export const parseArticleContent = async (contentArray) => {
   return articleContent;
 };
 
-export const parseArticlePicHtml = async (picURL) => {
+export const parsePicPageHtml = async (picPageURL) => {
   //get the html, build dom
-  const htmlModel = new KCNA({ url: picURL });
+  const htmlModel = new KCNA({ url: picPageURL });
   const html = await htmlModel.getHTML();
+
+  //if fails return null
+  if (!html) return null;
+
+  //otherwise parse html
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
@@ -154,15 +156,13 @@ export const parseArticlePicHtml = async (picURL) => {
   const articlePicArray = [];
 
   //get and loop through img elements
-  const imgElements = document.querySelectorAll("img");
-  for (let i = 0; i < imgElements.length; i++) {
-    const imgItem = imgElements[i];
-    if (!imgItem || !imgItem.getAttribute("src")) {
-      continue;
-    }
+  const imgArray = document.querySelectorAll("img");
+  for (let i = 0; i < imgArray.length; i++) {
+    const imgItem = imgArray[i];
+    if (!imgItem) continue;
 
     const imgSrc = imgItem.getAttribute("src");
-    const picObj = await parseImgSrc(imgSrc);
+    const picObj = await buildArticlePicObj(imgSrc);
     if (!picObj) continue;
 
     articlePicArray.push(picObj);
@@ -171,9 +171,13 @@ export const parseArticlePicHtml = async (picURL) => {
   return articlePicArray;
 };
 
-export const parseImgSrc = async (imgSrc) => {
+export const buildArticlePicObj = async (imgSrc) => {
   if (!imgSrc) return null;
 
+  //extract picURL
+  const picURL = "http://www.kcna.kp" + imgSrc;
+
+  //extract kcnaId
   const picPathNum = imgSrc.substring(imgSrc.length - 11, imgSrc.length - 4);
   if (!picPathNum) return null;
   const kcnaId = String(Number(picPathNum));
@@ -181,12 +185,8 @@ export const parseImgSrc = async (imgSrc) => {
   //extract out stupid date string
   const dateString = imgSrc.substring(imgSrc.indexOf("/photo/") + "/photo/".length, imgSrc.indexOf("/PIC", imgSrc.indexOf("/photo/")));
 
-  //build and return picObj
-  const picObj = {
-    url: "http://www.kcna.kp" + imgSrc,
-    picPath: CONFIG.savePicPathBase + kcnaId + ".jpg",
-    kcnaId: +kcnaId,
-    dateString: dateString,
-  };
+  //build pic OBJ from PIC URL file (checks if new AND stores it)
+  const picObj = await buildPicObj(picURL, kcnaId, dateString);
+
   return picObj;
 };
