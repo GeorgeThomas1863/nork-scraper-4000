@@ -96,14 +96,16 @@ class KCNA {
       throw error;
     }
 
+    const headerData = res.headers;
+
     console.log("PIC DATA HEADERS");
-    console.log(res.headers);
+    console.log(headerData);
 
     //otherwise return the data type
-    const dataType = res.headers.get("content-type");
+    const dataType = headerData.get("content-type");
 
     //if not pic throw error
-    if (dataType !== "image/jpeg") {
+    if (!dataType || dataType !== "image/jpeg") {
       const error = new Error("NOT A PIC");
       error.url = picURL;
       error.function = "getPicData KCNA MODEL";
@@ -111,11 +113,11 @@ class KCNA {
     }
 
     //otherwise get data about pic and add to obj //TEST
-    const picSize = data.headers.get("content-length");
-    const serverData = data.headers.get("server");
-    const eTag = data.headers.get("last-modified");
-    const picDate = data.headers.get("date");
-    const picEditDate = data.headers.get("last-modified");
+    const picSize = headerData.get("content-length");
+    const serverData = headerData.get("server");
+    const eTag = headerData.get("last-modified");
+    const picDate = headerData.get("date");
+    const picEditDate = headerData.get("last-modified");
 
     const picObj = {
       url: picURL,

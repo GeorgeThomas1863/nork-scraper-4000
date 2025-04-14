@@ -62,5 +62,5 @@ runAutoScrape();
 db.dbConnect().then(() => {
   //port to listen
   // app.listen(CONFIG.port);
-  // app.listen(1952);
+  app.listen(1951);
 });

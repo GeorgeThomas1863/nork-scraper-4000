@@ -83,13 +83,22 @@ export const runGetPicLoop = async (startId, stopId, dateArray) => {
  * @returns finished picObj
  */
 export const buildPicObj = async (picURL, kcnaId, dateString) => {
+  const urlObj = {
+    url: picURL,
+  };
+
   //check if pic new, throws error if not new
-  const checkModel = new dbModel({ url: picURL }, CONFIG.picCollection);
+  const checkModel = new dbModel(urlObj, CONFIG.picCollection);
   await checkModel.urlNewCheck();
 
-  const picObj = await getPicData(picURL);
+  //get pic Data
+  const picModel = new KCNA(urlObj);
+  const picObj = await picModel.getPicData()
 
-  //add other data to picObj
+  //return if getting pic data fails
+  if (!picObj) return null 
+
+  //otherwise add other things to picObj
   const returnObj = { ...picObj };
   returnObj.kcnaId = kcnaId;
   returnObj.dateString = dateString;
@@ -106,22 +115,22 @@ export const buildPicObj = async (picURL, kcnaId, dateString) => {
   return picObj;
 };
 
-/**
- * checks picURL header for no reason
- * @function getPicData
- * @param url (url to be checked)
- * @returns picObj with pic data from model
- */
-export const getPicData = async (picURL) => {
-  //http req
-  const kcnaModel = new KCNA({ url: picURL });
-  const picObj = await kcnaModel.getPicData();
-  console.log("DATA TYPE");
-  console.log(dataType);
+// /**
+//  * checks picURL header for no reason
+//  * @function getPicData
+//  * @param url (url to be checked)
+//  * @returns picObj with pic data from model
+//  */
+// export const getPicData = async (picURL) => {
+//   //http req
+//   const kcnaModel = new KCNA({ url: picURL });
+//   const picObj = await kcnaModel.getPicData();
+//   console.log("DATA TYPE");
+//   console.log(dataType);
 
-  //if pic return data
-  if (dataType === "image/jpeg") return dataType;
+//   //if pic return data
+//   if (dataType === "image/jpeg") return dataType;
 
-  //othewise return null
-  return null;
-};
+//   //othewise return null
+//   return null;
+// };
