@@ -1,6 +1,8 @@
 //TO DO
 
-// KEEP GOING WITH EXTRACTING PIC OBJECT data (MAYBE TEST WITH NAENARA? and VOK?)
+// TEST CURL WITH NAENARA / VOK
+// MAKE SURE PARSING DATES IN PIC OBJ AS DATES
+
 // USE pic size to compare if new (the point of all this)
 
 // //FINISH PIC UPLOADING (ADD EDIT CAPTIONS, etc)
@@ -62,5 +64,5 @@ runAutoScrape();
 db.dbConnect().then(() => {
   //port to listen
   // app.listen(CONFIG.port);
-  app.listen(1951);
+  // app.listen(1952);
 });
