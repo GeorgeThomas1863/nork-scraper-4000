@@ -98,6 +98,9 @@ class KCNA {
 
     const headerData = res.headers;
 
+    console.log("HEADER DATA");
+    console.log(headerData);
+
     //otherwise return the data type
     const dataType = headerData.get("content-type");
 
