@@ -115,7 +115,7 @@ class KCNA {
     //otherwise get data about pic and add to obj //TEST
     const picSize = headerData.get("content-length");
     const serverData = headerData.get("server");
-    const eTag = headerData.get("last-modified");
+    const eTag = headerData.get("etag");
     const picDate = new Date(headerData.get("date"));
     const picEditDate = new Date(headerData.get("last-modified"));
 
