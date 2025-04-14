@@ -1,8 +1,6 @@
 //TO DO
 
-// TEST CURL WITH NAENARA / VOK
-// MAKE SURE PARSING DATES IN PIC OBJ AS DATES
-
+// ADD CURRENT DATE time as "scrapeDate" to picOBJ
 // USE pic size to compare if new (the point of all this)
 
 // //FINISH PIC UPLOADING (ADD EDIT CAPTIONS, etc)

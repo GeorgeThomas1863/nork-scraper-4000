@@ -116,7 +116,6 @@ class KCNA {
     const picSize = headerData.get("content-length");
     const serverData = headerData.get("server");
     const eTag = headerData.get("etag");
-    const picDate = new Date(headerData.get("date"));
     const picEditDate = new Date(headerData.get("last-modified"));
 
     const picObj = {
@@ -125,7 +124,6 @@ class KCNA {
       serverData: serverData,
       eTag: eTag,
       picSize: picSize,
-      picDate: picDate,
       picEditDate: picEditDate,
     };
 

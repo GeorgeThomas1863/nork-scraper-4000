@@ -93,10 +93,10 @@ export const buildPicObj = async (picURL, kcnaId, dateString) => {
 
   //get pic Data
   const picModel = new KCNA(urlObj);
-  const picObj = await picModel.getPicData()
+  const picObj = await picModel.getPicData();
 
   //return if getting pic data fails
-  if (!picObj) return null 
+  if (!picObj) return null;
 
   //otherwise add other things to picObj
   const returnObj = { ...picObj };
@@ -105,11 +105,11 @@ export const buildPicObj = async (picURL, kcnaId, dateString) => {
   returnObj.picPath = CONFIG.savePicPathBase + kcnaId + ".jpg";
 
   //store it, throws error if not new
-  const storeModel = new dbModel(picObj, CONFIG.picCollection);
+  const storeModel = new dbModel(returnObj, CONFIG.picCollection);
   const storeTest = await storeModel.storeUniqueURL();
   console.log(storeTest);
   console.log("PIC OBJECT");
-  console.log(picObj);
+  console.log(returnObj);
 
   //if successful return picObj
   return picObj;
