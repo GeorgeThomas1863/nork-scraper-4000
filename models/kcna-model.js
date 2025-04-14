@@ -98,9 +98,6 @@ class KCNA {
 
     const headerData = res.headers;
 
-    console.log("PIC DATA HEADERS");
-    console.log(headerData);
-
     //otherwise return the data type
     const dataType = headerData.get("content-type");
 
@@ -116,8 +113,8 @@ class KCNA {
     const picSize = headerData.get("content-length");
     const serverData = headerData.get("server");
     const eTag = headerData.get("last-modified");
-    const picDate = headerData.get("date");
-    const picEditDate = headerData.get("last-modified");
+    const picDate = new Date(headerData.get("date"));
+    const picEditDate = new Date(headerData.get("last-modified"));
 
     const picObj = {
       url: picURL,
@@ -128,9 +125,6 @@ class KCNA {
       picDate: picDate,
       picEditDate: picEditDate,
     };
-
-    console.log("PIC OBJECT MODEL");
-    console.log(picObj);
 
     return picObj;
   }

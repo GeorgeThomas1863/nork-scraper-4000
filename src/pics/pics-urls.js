@@ -108,7 +108,7 @@ export const buildPicObj = async (picURL, kcnaId, dateString) => {
   const storeModel = new dbModel(picObj, CONFIG.picCollection);
   const storeTest = await storeModel.storeUniqueURL();
   console.log(storeTest);
-  console.log("FINISHED PIC OBJECT");
+  console.log("PIC OBJECT");
   console.log(picObj);
 
   //if successful return picObj
