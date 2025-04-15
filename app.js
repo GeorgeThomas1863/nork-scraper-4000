@@ -4,10 +4,9 @@
 //MAKE SURE ARTICLE PICS ARENT IDENTIFYING / SAVING ALREADY KNOWN PICS
 //MAYBE JUST MAYBE TRY TO MAKE SOME PROGRESS
 
-// ADD CURRENT DATE time as "scrapeDate" to picOBJ
-// USE pic size to compare if new (the point of all this)
-
 // //FINISH PIC UPLOADING (ADD EDIT CAPTIONS, etc)
+
+//create mechanism to DELETE pics saved to FS (maybe anything over 1000)
 
 //(DO LATER) Make a separate branch using puppeteer to pull pics (will let you get more info from server)
 

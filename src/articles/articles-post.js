@@ -3,6 +3,7 @@ import dbModel from "../../models/db-model.js";
 
 import { postPicFS } from "../pics/pics-upload.js";
 import { normalizeArticleInputs } from "./articles-util.js";
+import { sendMessageChunkTG } from "../tg-api.js";
 
 /**
  * Finds new articles to post and posts them WITH their pics (posting pics first)
@@ -134,9 +135,6 @@ export const postArticlePic = async (picObj) => {
   //add tg chatId to params
   const picParams = { ...picObj };
   picParams.chatId = CONFIG.articleSendToId;
-
-  console.log("GETTING THERE FUCKER");
-  console.log(picParams);
 
   const postPicData = await postPicFS(picParams);
   return postPicData;
