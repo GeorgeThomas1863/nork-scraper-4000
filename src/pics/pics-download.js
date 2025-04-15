@@ -33,11 +33,8 @@ export const downloadPicArray = async (picArray) => {
     try {
       const picObj = picArray[i];
 
-      console.log("PIC OBJECT");
-      console.log(picObj);
-
       //throws error if already downloaded / on fail
-      const downloadObj = await downloadPic(picObj);
+      const downloadObj = await runDownloadPicFS(picObj);
 
       //if successful, track pic downloaded
       picDownloadedArray.push(downloadObj);
@@ -52,16 +49,19 @@ export const downloadPicArray = async (picArray) => {
 
 /**
  * Downloads single pic, after checking if new, stores if successful
- * @function downloadPic
+ * @function runDownloadPicFS
  * @param {*} picObj - picObj to download
  * @returns input param if downloaded, throws error if pic already downloaded / on fail
  */
-export const downloadPic = async (picObj) => {
+export const runDownloadPicFS = async (picObj) => {
   if (!picObj) return null;
 
   //first check if pic NOT already downloaded
   const dataModel = new dbModel(picObj, CONFIG.downloadedCollection);
   await dataModel.urlNewCheck(); //throws error if pic already downloaded
+
+  console.log("HERE FUCKER");
+  console.log(picObj);
 
   //download pic, (throws error on fail)
   const picModel = new KCNA(picObj);
