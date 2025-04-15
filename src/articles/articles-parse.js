@@ -189,6 +189,7 @@ export const buildArticlePicObj = async (imgSrc) => {
   const picObj = await buildPicObj(picURL, kcnaId, dateString);
 
   console.log("ARTICLE PIC OBJECT");
+  console.log("WHY ME?????");
   console.log(picObj);
 
   return picObj;
