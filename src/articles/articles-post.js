@@ -2,6 +2,7 @@ import CONFIG from "../../config/scrape-config.js";
 import dbModel from "../../models/db-model.js";
 
 import { postPicFS } from "../pics/pics-upload.js";
+import { normalizeArticleInputs } from "./articles-util.js";
 
 /**
  * Finds new articles to post and posts them WITH their pics (posting pics first)

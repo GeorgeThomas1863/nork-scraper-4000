@@ -3,6 +3,20 @@ import CONFIG from "../../config/scrape-config.js";
 import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
+export const downloadNewPics = async () => {
+  //USE mongo to check if any of the pics just downloaded (in loop) are NEW
+  //COMPARES BASED ON PIC SIZE
+  const checkParams = {
+    collection1: CONFIG.picCollection, //list of pic URLs (just updated)
+    collection2: CONFIG.downloadedCollection, //pics already downloaded
+  };
+  const checkModel = new dbModel(checkParams, "");
+  const newPicURLs = await checkModel.findNewURLs();
+
+  const picsDownloaded = await downloadPicArray(newPicURLs);
+  return picsDownloaded;
+};
+
 /**
  * Download pics array
  * @function downloadPicArray
@@ -19,7 +33,7 @@ export const downloadPicArray = async (picArray) => {
       const picObj = picArray[i];
 
       //throws error if already downloaded / on fail
-      const downloadObj = await downloadNewPic(picObj);
+      const downloadObj = await downloadPic(picObj);
 
       //if successful, track pic downloaded
       picDownloadedArray.push(downloadObj);
@@ -34,11 +48,11 @@ export const downloadPicArray = async (picArray) => {
 
 /**
  * Downloads single pic, after checking if new, stores if successful
- * @function downloadNewPic
+ * @function downloadPic
  * @param {*} picObj - picObj to download
  * @returns input param if downloaded, throws error if pic already downloaded / on fail
  */
-export const downloadNewPic = async (picObj) => {
+export const downloadPic = async (picObj) => {
   if (!picObj) return null;
 
   //first check if pic NOT already downloaded

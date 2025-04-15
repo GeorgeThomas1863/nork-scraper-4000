@@ -20,19 +20,9 @@ export const getNewPicURLs = async () => {
 
   //run loop (return just for checking)
   const newPicArray = await runGetPicLoop(startId, stopId, dateArray);
-  console.log("FINISHED GETTING FOLLOWING NEW PICS:");
-  console.log(newPicArray);
 
-  //USE mongo to check if any of the pics just downloaded (in loop) are NEW
-  //COMPARES BASED ON PIC SIZE
-  const checkParams = {
-    collection1: CONFIG.picCollection, //list of pic URLs (just updated)
-    collection2: CONFIG.downloadedCollection, //pics already downloaded
-  };
-  const checkModel = new dbModel(checkParams, "");
-  const newPicURLs = await checkModel.findNewURLs();
-
-  return newPicURLs;
+  //return not needed just for tracking
+  return newPicArray;
 };
 
 /**
