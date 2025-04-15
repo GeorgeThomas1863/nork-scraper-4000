@@ -120,7 +120,8 @@ class KCNA {
 
     const picObj = {
       url: picURL,
-      dateType: dataType,
+      scrapeDate: new Date(),
+      dataType: dataType,
       serverData: serverData,
       eTag: eTag,
       picSize: picSize,
