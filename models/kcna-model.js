@@ -96,12 +96,8 @@ class KCNA {
       throw error;
     }
 
-    const headerData = res.headers;
-
-    console.log("HEADER DATA");
-    console.log(headerData);
-
-    //otherwise return the data type
+    //get pic headers
+    const headerData = res.headers;   
     const dataType = headerData.get("content-type");
 
     //if not pic throw error
@@ -139,15 +135,12 @@ class KCNA {
    * @throws {Error} Enhanced error object with URL and function name if download fails
    */
   async downloadPicFS() {
-    const { url, savePath, kcnaId, picSize } = this.dataObject;
+    const { url, picPath, kcnaId, picSize } = this.dataObject;
 
     const res = await axios.get(url, {
       responseType: "stream",
       timeout: 30000,
     });
-
-    console.log("FUCKING RES");
-    console.log(res.ok);
 
     //throw error if cant load
     if (!res || res.status !== 200) {
@@ -157,7 +150,7 @@ class KCNA {
       throw error;
     }
 
-    const writer = fs.createWriteStream(savePath);
+    const writer = fs.createWriteStream(picPath);
     const stream = res.data.pipe(writer);
     // const picSize = parseInt(res.headers["content-length"], 10);
     let picSavedSize = 0;
