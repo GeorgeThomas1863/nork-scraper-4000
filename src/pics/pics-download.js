@@ -33,6 +33,9 @@ export const downloadPicArray = async (picArray) => {
     try {
       const picObj = picArray[i];
 
+      console.log("PIC OBJECT");
+      console.log(picObj);
+
       //throws error if already downloaded / on fail
       const downloadObj = await downloadPic(picObj);
 
