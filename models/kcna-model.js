@@ -147,10 +147,10 @@ class KCNA {
     });
 
     console.log("FUCKING RES");
-    console.log(res);
+    console.log(res.ok);
 
     //throw error if cant load
-    if (!res || !res.ok) {
+    if (!res || res.status !== 200) {
       const error = new Error("CANT LOAD PIC");
       error.url = url;
       error.function = "downloadPicFS MODEL";
