@@ -18,5 +18,5 @@ export const runPicsScrape = async () => {
   console.log(picsDownloaded);
 
   //return number of new pics downloaded
-  return picsDownloaded.length;
+  return picsDownloaded
 };
