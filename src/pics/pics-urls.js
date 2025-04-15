@@ -102,6 +102,6 @@ export const buildPicObj = async (picURL, kcnaId, dateString) => {
   // console.log("PIC OBJECT");
   // console.log(returnObj);
 
-  //if successful return picObj
-  return picObj;
+  //if successful return RETURNOBJ (sad)
+  return returnObj;
 };
