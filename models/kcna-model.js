@@ -134,46 +134,55 @@ class KCNA {
   /**
    * Downloads an image from a URL and saves it to the filesystem
    * @function downloadPicFS
-   * @returns {Promise<string>} The URL of the downloaded image
+   * @params url (to pic); savePath (for pic); picSize (from pic header pulled / saved earlier)
+   * @returns {Promise<string>} size of downloaded image
    * @throws {Error} Enhanced error object with URL and function name if download fails
    */
   async downloadPicFS() {
-    const picURL = this.dataObject.url;
-    const savePath = this.dataObject.savePath;
+    const { url, savePath, kcnaId, picSize } = this.dataObject;
 
-    try {
-      const res = await axios.get(picURL, {
-        responseType: "stream",
-        // timeout: 5000,
-      });
+    const res = await axios.get(url, {
+      responseType: "stream",
+      timeout: 30000,
+    });
 
-      const writer = fs.createWriteStream(savePath);
-      const stream = res.data.pipe(writer);
-      const picSize = parseInt(res.headers["content-length"], 10);
-      let downloadedSize = 0;
-
-      console.log("DOWNLOADING PIC " + picSize + "B");
-
-      //download shit
-      res.data.on("data", (chunk) => {
-        downloadedSize += chunk.length;
-        if (downloadedSize >= picSize) {
-          // console.log("All data chunks downloaded.");
-          // console.log(picURL);
-        }
-      });
-
-      await new Promise((resolve, reject) => {
-        stream.on("finish", resolve);
-        stream.on("error", reject);
-      });
-
-      return picSize;
-    } catch (error) {
-      error.url = picURL;
-      error.function = "downloadPicFS";
+    //throw error if cant load
+    if (!res || !res.ok) {
+      const error = new Error("CANT LOAD PIC");
+      error.url = url;
+      error.function = "downloadPicFS MODEL";
       throw error;
     }
+
+    const writer = fs.createWriteStream(savePath);
+    const stream = res.data.pipe(writer);
+    // const picSize = parseInt(res.headers["content-length"], 10);
+    let picSavedSize = 0;
+
+    //download shit
+    res.data.on("data", (chunk) => {
+      picSavedSize += chunk.length;
+      if (picSavedSize >= picSize) {
+      }
+    });
+
+    await new Promise((resolve, reject) => {
+      stream.on("finish", resolve);
+      stream.on("error", reject);
+    });
+
+    console.log("DOWNLOADED PIC: " + kcnaId + ".jpg | " + picSize + "B");
+
+    //throw error if shit doesnt download
+    if (picSavedSize < picSize) {
+      const error = new Error("PIC NOT FULLY DOWNLOADED");
+      error.url = url;
+      error.function = "downloadPicFS MODEL";
+      throw error;
+    }
+
+    //return unnecessary just for tracking
+    return picSavedSize;
   }
 }
 

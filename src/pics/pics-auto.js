@@ -11,7 +11,7 @@ export const runPicsScrape = async () => {
   //get / find new pics (returns Mongo comparison of new pics)
   const newPicURLs = await getNewPicURLs();
 
-  //check if any new, return null if not
+  //checks in MONGO if any new
   if (!newPicURLs || !newPicURLs.length) return null;
 
   //otherwise download new PICS

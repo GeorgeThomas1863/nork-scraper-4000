@@ -98,11 +98,6 @@ export const getNewArticleContent = async (inputArray) => {
 
       //if successful (no error) add to array
       articleContentArray.push(articleObj);
-
-      //SHOULD BE UNNECESSARY WITH ARTICLE PIC ARRAY PROPERLY BUILT
-      // //check article pics (if any new download) AFTER storing Content
-      // const newPicsArray = await checkArticlePics(articleObj);
-      // console.log(newPicsArray.length); //new pics downloaded with article
     } catch (e) {
       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
     }
@@ -132,39 +127,3 @@ export const getNewArticleObj = async (listObj) => {
   return articleObj;
 };
 
-//SHOULD BE UNNECESSARY WITH ARTICLE PIC ARRAY PROPERLY BUILT
-// /**
-//  * Checks whether any of the article pics are new, stores them AND downloads them if new
-//  * @function checkArticlePics
-//  * @param {*} picArray -picArray on the article Object
-//  * @returns array of new pic OBJECTS
-//  */
-// export const checkArticlePics = async (articleObj) => {
-//   if (!articleObj) return null;
-
-//   //return null if article has no pics
-//   const { articlePicArray } = articleObj;
-//   if (!articleObj.articlePicArray || !articleObj.articlePicArray.length) return null;
-
-//   //loop through pics
-//   const picNewArray = [];
-
-//   //FUCKING STUPID TO DO THIS HERE
-//   for (let i = 0; i < articlePicArray.length; i++) {
-//     try {
-//       const articlePicObj = articlePicArray[i];
-//       const { url, kcnaId, dateString } = articlePicObj;
-
-//       //checks if pic new / exists, stores it if it is, throws error if not
-//       const picObj = await buildPicObj(url, kcnaId, dateString);
-
-//       //if all successful add to array (for tracking)
-//       picNewArray.push(picObj);
-//     } catch (e) {
-//       console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
-//     }
-//   }
-
-//   //unnecessary, just for tracking
-//   return picNewArray;
-// };

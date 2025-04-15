@@ -24,6 +24,7 @@ export const getNewPicURLs = async () => {
   console.log(newPicArray);
 
   //USE mongo to check if any of the pics just downloaded (in loop) are NEW
+  //COMPARES BASED ON PIC SIZE
   const checkParams = {
     collection1: CONFIG.picCollection, //list of pic URLs (just updated)
     collection2: CONFIG.downloadedCollection, //pics already downloaded
@@ -114,23 +115,3 @@ export const buildPicObj = async (picURL, kcnaId, dateString) => {
   //if successful return picObj
   return picObj;
 };
-
-// /**
-//  * checks picURL header for no reason
-//  * @function getPicData
-//  * @param url (url to be checked)
-//  * @returns picObj with pic data from model
-//  */
-// export const getPicData = async (picURL) => {
-//   //http req
-//   const kcnaModel = new KCNA({ url: picURL });
-//   const picObj = await kcnaModel.getPicData();
-//   console.log("DATA TYPE");
-//   console.log(dataType);
-
-//   //if pic return data
-//   if (dataType === "image/jpeg") return dataType;
-
-//   //othewise return null
-//   return null;
-// };
