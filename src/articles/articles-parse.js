@@ -188,5 +188,8 @@ export const buildArticlePicObj = async (imgSrc) => {
   //build pic OBJ from PIC URL file (checks if new AND stores it)
   const picObj = await buildPicObj(picURL, kcnaId, dateString);
 
+  console.log("ARTICLE PIC OBJECT");
+  console.log(picObj);
+
   return picObj;
 };
