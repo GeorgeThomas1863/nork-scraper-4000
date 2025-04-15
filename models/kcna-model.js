@@ -97,16 +97,11 @@ class KCNA {
     }
 
     //get pic headers
-    const headerData = res.headers;   
+    const headerData = res.headers;
     const dataType = headerData.get("content-type");
 
-    //if not pic throw error
-    if (!dataType || dataType !== "image/jpeg") {
-      const error = new Error("NOT A PIC");
-      error.url = picURL;
-      error.function = "getPicData KCNA MODEL";
-      throw error;
-    }
+    //if not pic RETURN NULL
+    if (!dataType || dataType !== "image/jpeg") return null;
 
     //otherwise get data about pic and add to obj //TEST
     const picSize = headerData.get("content-length");
