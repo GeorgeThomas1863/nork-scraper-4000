@@ -1,5 +1,9 @@
 //TO DO
 
+//UNFUCK PIC DOWNLOADING
+//MAKE SURE ARTICLE PICS ARENT IDENTIFYING / SAVING ALREADY KNOWN PICS
+//MAYBE JUST MAYBE TRY TO MAKE SOME PROGRESS
+
 // ADD CURRENT DATE time as "scrapeDate" to picOBJ
 // USE pic size to compare if new (the point of all this)
 
@@ -62,5 +66,5 @@ runAutoScrape();
 db.dbConnect().then(() => {
   //port to listen
   // app.listen(CONFIG.port);
-  // app.listen(1952);
+  // app.listen(1950);
 });
