@@ -1,6 +1,7 @@
 import CONFIG from "../../config/scrape-config.js";
 import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
+import Parse from "../../models/parse-model.js";
 
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
 import { sortArticleArray, getArticleId } from "./articles-util.js";
@@ -17,7 +18,8 @@ export const getNewArticleURLs = async () => {
   const articleListHtml = await articleListModel.getHTML();
 
   //get the article list array from current articles html
-  const articleListArray = await parseArticleListHtml(articleListHtml);
+  const parseModel = new Parse({ html: articleListHtml });
+  const articleListArray = await parseModel.parseArticleList();
 
   //NORMALIZE list by soring by date, add in id AND storing the ARRAY
   const normalListArray = await getNormalArticleList(articleListArray);
@@ -126,4 +128,3 @@ export const getNewArticleObj = async (listObj) => {
 
   return articleObj;
 };
-
