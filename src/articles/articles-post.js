@@ -135,6 +135,9 @@ export const postArticlePic = async (picObj) => {
   const picParams = { ...picObj };
   picParams.chatId = CONFIG.articleSendToId;
 
+  console.log("GETTING THERE FUCKER");
+  console.log(picParams);
+
   const postPicData = await postPicFS(picParams);
   return postPicData;
 };
