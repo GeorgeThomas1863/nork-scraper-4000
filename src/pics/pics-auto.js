@@ -10,8 +10,7 @@ export const runPicsScrape = async () => {
   console.log("STARTING PIC SCRAPE");
   //get / find new pics (returns Mongo comparison of new pics)
   const newPicURLs = await getNewPicURLs();
-  console.log("FOUND FOLLOWING NEW PICS:");
-  console.log(newPicURLs);
+  console.log("FOUND " + newPicURLs.length + " NEW PICS");
 
   //otherwise download new PICS
   const picsDownloaded = await downloadNewPics();
