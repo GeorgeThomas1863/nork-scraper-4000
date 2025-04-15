@@ -102,6 +102,38 @@ class dbModel {
   }
 
   /**
+   * Finds items in collection1 that either don't exist in collection2
+   * or have a larger size in collection1 than in collection2
+   * @function findNewURLs
+   * @returns {Promise<Array<Object>>} Array of documents with unique URLs
+   */
+  async findNewPicsBySize() {
+    const collection1 = this.dataObject.collection1; //OLD THING (compare against)
+    const collection2 = this.dataObject.collection2; //NEW THING (process you are currently doing / handling)
+
+    // Get all docs from collection1
+    const collection1Data = await db.dbGet().collection(collection1).find().toArray();
+
+    // Create an array to store the matching results
+    const docArray = [];
+
+    // Process each document in collection1
+    for (const doc of collection1Data) {
+      // Check if this URL exists in collection2
+      const matchingDoc = await db.dbGet().collection(collection2).findOne({ url: doc.url });
+
+      // Add to results if:
+      // 1. The URL doesn't exist in collection2, or
+      // 2. The picSize in collection1 is larger than in collection2
+      if (!matchingDoc || doc.picSize > matchingDoc.picSize) {
+        docArray.push(doc);
+      }
+    }
+
+    return docArray;
+  }
+
+  /**
    * Finds / returns the maximum value of a specified key in the collection
    * @function findMaxId
    * @returns {Promise<number|null>} The maximum value found, or null if collection is empty

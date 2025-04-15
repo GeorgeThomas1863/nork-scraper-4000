@@ -3,6 +3,7 @@ import CONFIG from "../../config/scrape-config.js";
 import KCNA from "../../models/kcna-model.js";
 import dbModel from "../../models/db-model.js";
 
+//IDENTIFY NEW PICS BY FUCKING PIC SIZE
 export const downloadNewPics = async () => {
   //USE mongo to check if any of the pics just downloaded (in loop) are NEW
   //COMPARES BASED ON PIC SIZE
@@ -11,7 +12,7 @@ export const downloadNewPics = async () => {
     collection2: CONFIG.downloadedCollection, //pics already downloaded
   };
   const checkModel = new dbModel(checkParams, "");
-  const newPicURLs = await checkModel.findNewURLs();
+  const newPicURLs = await checkModel.findNewPicsBySize();
 
   const picsDownloaded = await downloadPicArray(newPicURLs);
   return picsDownloaded;
