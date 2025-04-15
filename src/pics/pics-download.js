@@ -60,9 +60,6 @@ export const runDownloadPicFS = async (picObj) => {
   const dataModel = new dbModel(picObj, CONFIG.downloadedCollection);
   await dataModel.urlNewCheck(); //throws error if pic already downloaded
 
-  console.log("HERE FUCKER");
-  console.log(picObj);
-
   //download pic, (throws error on fail)
   const picModel = new KCNA(picObj);
   await picModel.downloadPicFS();

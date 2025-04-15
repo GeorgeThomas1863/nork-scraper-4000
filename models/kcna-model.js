@@ -141,6 +141,9 @@ class KCNA {
   async downloadPicFS() {
     const { url, savePath, kcnaId, picSize } = this.dataObject;
 
+    console.log("HERE FAGGOT");
+    console.log(url);
+
     const res = await axios.get(url, {
       responseType: "stream",
       timeout: 30000,
