@@ -34,11 +34,8 @@ export const getNewArticleURLs = async () => {
  * @returns array of OBJECTS with data about each KCNA article
  */
 export const getNewArticleContent = async () => {
-  const checkModel = new UTIL({ type: "download" });
+  const checkModel = new UTIL({ type: "articleDownload" });
   const inputArray = await checkModel.getNewArray();
-
-  console.log("INPUT ARRAY");
-  console.log(inputArray);
 
   //return if input empty (shouldnt happen)
   if (!inputArray || !inputArray.length) return null;
