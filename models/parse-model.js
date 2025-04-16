@@ -71,10 +71,10 @@ class Parse {
 
     //add article ID
     const idModel = new UTIL({ data: articleListSort });
-    const articleListStore = await idModel.addArticleId();
+    const articleListStore = await idModel.addArticleIdArray();
 
-    const storeModel = new dbModel({ data: articleListStore }, CONFIG.articleURLs);
-    const storeData = await storeModel.storeArray();
+    const storeArrayModel = new dbModel({ data: articleListStore }, CONFIG.articleURLs);
+    const storeData = await storeArrayModel.storeArray();
     console.log(storeData);
 
     //noramlize article list
