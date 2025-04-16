@@ -79,8 +79,8 @@ export const getNewArticleObj = async (listObj) => {
   console.log(articleObj);
 
   //store it HERE
-  const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
-  await storeModel.storeUniqueURL(); //throws error if not unique
+  // const storeModel = new dbModel(articleObj, CONFIG.articleContentCollection);
+  // await storeModel.storeUniqueURL(); //throws error if not unique
 
   return articleObj;
 };
