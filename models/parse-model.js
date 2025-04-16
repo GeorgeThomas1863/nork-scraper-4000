@@ -36,6 +36,9 @@ class Parse {
 
     // Find all anchor tags within the article-link element (puts them in an)
     const linkElementArray = articleLinkElement.querySelectorAll("a");
+    console.log("HERRRRRRRE");
+    console.log(linkElementArray);
+
     const parseLinkModel = new Parse(linkElementArray);
 
     //get article List array
