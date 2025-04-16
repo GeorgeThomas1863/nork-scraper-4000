@@ -57,7 +57,7 @@ class dbModel {
   async storeArray() {
     //return null on blank input
     const storeArray = [];
-    const inputArray = this.dataObject.data;
+    const inputArray = this.dataObject;
     if (!inputArray || !inputArray.length) return null;
 
     // loop through input array (of OBJs) adding articleId identifier
