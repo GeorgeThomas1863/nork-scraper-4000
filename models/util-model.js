@@ -1,5 +1,5 @@
 import CONFIG from "../config/scrape-config.js";
-import dbModel from "./db-model";
+import dbModel from "./db-model.js";
 
 /**
  * @class UTIL

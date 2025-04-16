@@ -2,9 +2,6 @@ import { JSDOM } from "jsdom";
 
 import UTIL from "./util-model.js";
 import CONFIG from "../config/scrape-config.js";
-import dbModel from "./db-model.js";
-
-import { getArticleId, sortArticleArray } from "../src/articles/articles-util.js";
 
 /**
  * @class Parse
