@@ -79,9 +79,6 @@ class UTIL {
     const dataType = this.dataObject.type;
     let checkParams = "";
 
-    console.log("AHHHHHHHHHHHHHHHHHHHHHHHH");
-    console.log(dataType);
-
     //prob convert to select case
     if (dataType === "articleDownload") {
       checkParams = {

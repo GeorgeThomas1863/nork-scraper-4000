@@ -28,42 +28,18 @@ class Parse {
     const dom = new JSDOM(this.dataObject);
     const document = dom.window.document;
 
-    //define things
-    const articleListArray = [];
-    const urlConstant = "http://www.kcna.kp";
-
     // Find the element with class "article-link"
     const articleLinkElement = document.querySelector(".article-link");
 
     //if no article links (shouldnt happen)
     if (!articleLinkElement) return null;
 
-    //HERE!!!!
-    //CLAUDE CLAIMS I CAN REFACTOR THE BELOW AND PASS THE DOM ELEEMNT TO NEXT EQUATION. TEST THIS
-    //!!!!!!
-
     // Find all anchor tags within the article-link element (puts them in an)
-    const linkElements = articleLinkElement.querySelectorAll("a");
+    const linkElementArray = articleLinkElement.querySelectorAll("a");
+    const parseLinkModel = new Parse(linkElementArray);
 
-    //loop through a tags and pull out hrefs
-    for (let i = 0; i < linkElements.length; i++) {
-      const href = linkElements[i].getAttribute("href");
-      const url = urlConstant + href; //build full url
-
-      //GET DATE
-      const dateElement = linkElements[i].querySelector(".publish-time");
-      if (!dateElement) continue;
-      const dateText = dateElement.textContent.trim();
-      const articleDate = await this.parseDateElement(dateText);
-
-      //build obj
-      const listObj = {
-        url: url,
-        date: articleDate,
-      };
-
-      articleListArray.push(listObj); //add to array
-    }
+    //get article List array
+    const articleListArray = await parseLinkModel.parseLinkArray();
 
     //sort the array
     const sortModel = new UTIL({ data: articleListArray });
@@ -73,16 +49,45 @@ class Parse {
     const idModel = new UTIL({ data: articleListSort });
     const articleListStore = await idModel.addArticleIdArray();
 
-    const storeArrayModel = new dbModel(articleListStore, CONFIG.articleURLs);
-    const storeData = await storeArrayModel.storeArray();
+    const storeDataModel = new dbModel(articleListStore, CONFIG.articleURLs);
+    const storeData = await storeDataModel.storeArray();
     console.log(storeData);
 
     //noramlize article list
     return articleListArray;
   }
 
+  async parseLinkArray() {
+    //define things
+    const linkElementArray = this.dataObject;
+    const articleListArray = [];
+    const urlConstant = "http://www.kcna.kp";
+
+    //loop through a tags and pull out hrefs
+    for (let i = 0; i < linkElementArray.length; i++) {
+      const href = linkElementArray[i].getAttribute("href");
+      const url = urlConstant + href; //build full url
+
+      //GET DATE
+      const dateElement = linkElementArray[i].querySelector(".publish-time");
+      if (!dateElement) continue;
+      const dateText = dateElement.textContent.trim();
+      const dateModel = new Parse(dateText);
+      const articleDate = await dateModel.parseDateElement();
+
+      //build obj
+      const listObj = {
+        url: url,
+        date: articleDate,
+      };
+
+      articleListArray.push(listObj); //add to array
+    }
+  }
+
   //breaks out date parsing
-  async parseDateElement(dateText) {
+  async parseDateElement() {
+    const dateText = this.dataObject;
     //return null if empty
     if (!dateText) return null;
 
