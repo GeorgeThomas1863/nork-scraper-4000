@@ -53,17 +53,17 @@ class Parse {
     const storeData = await storeDataModel.storeArray();
     console.log(storeData);
 
-    //noramlize article list
+    //for tracking
     return articleListArray;
   }
 
   async parseLinkArray() {
     //define things
     const linkElementArray = this.dataObject;
-    const articleListArray = [];
     const urlConstant = "http://www.kcna.kp";
 
     //loop through a tags and pull out hrefs
+    const articleListArray = [];
     for (let i = 0; i < linkElementArray.length; i++) {
       const href = linkElementArray[i].getAttribute("href");
       const url = urlConstant + href; //build full url
@@ -86,6 +86,8 @@ class Parse {
 
       articleListArray.push(listObj); //add to array
     }
+
+    return articleListArray;
   }
 
   //breaks out date parsing
