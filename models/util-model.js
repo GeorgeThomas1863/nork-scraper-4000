@@ -80,7 +80,7 @@ class UTIL {
     let checkParams = "";
 
     console.log("AHHHHHHHHHHHHHHHHHHHHHHHH");
-    console.logI(dataType);
+    console.log(dataType);
 
     //prob convert to select case
     if (dataType === "articleDownload") {
