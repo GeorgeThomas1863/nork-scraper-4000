@@ -25,7 +25,10 @@ class Parse {
    */
   async parseArticleList() {
     // Parse the HTML using JSDOM
-    const dom = new JSDOM(this.dataObject.html);
+    console.log("ARTICLE LIST HTML");
+    console.log(this.dataObject);
+
+    const dom = new JSDOM(this.dataObject);
     const document = dom.window.document;
 
     //define things

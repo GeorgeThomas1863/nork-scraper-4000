@@ -20,7 +20,7 @@ export const getNewArticleURLs = async () => {
   const articleListHtml = await articleListModel.getHTML();
 
   //get the article list array from current articles html
-  const parseModel = new Parse({ html: articleListHtml });
+  const parseModel = new Parse(articleListHtml);
   const articleListArray = await parseModel.parseArticleList();
   console.log("ARTICLE LIST ARRAY");
   console.log(articleListArray);
