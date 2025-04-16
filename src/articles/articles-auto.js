@@ -8,6 +8,7 @@ export const runArticleScrape = async () => {
 
   //download new articles (uses mongo to check if any new)
   const newArticleContent = await getNewArticleContent();
+  if (!newArticleContent) return null;
   console.log("FINISHED GETTING CONTENT FOR THIS MANY NEW ARTICLES:");
   console.log(newArticleContent.length);
 
