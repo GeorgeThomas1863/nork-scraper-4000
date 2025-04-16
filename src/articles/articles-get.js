@@ -20,6 +20,7 @@ export const getNewArticleURLs = async () => {
   //get the article list array from current articles html
   const parseModel = new Parse({ html: articleListHtml });
   const articleListArray = await parseModel.parseArticleList();
+  console.log("ARTICLE LIST ARRAY");
   console.log(articleListArray);
 
   // //NORMALIZE list by soring by date, add in id AND storing the ARRAY

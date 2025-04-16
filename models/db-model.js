@@ -62,13 +62,17 @@ class dbModel {
 
     // loop through input array (of OBJs) adding articleId identifier
     for (let i = 0; i < inputArray.length; i++) {
-      const inputObj = inputArray[i];
+      try {
+        const inputObj = inputArray[i];
 
-      //throws error if not unique
-      //(claude claims i can instantiate a new instance from within this class)
-      const storeModel = new dbModel(inputObj, this.collection);
-      const storeData = await storeModel.storeUniqueURL();
-      storeArray.push(storeData);
+        //throws error if not unique
+        //(claude claims i can instantiate a new instance from within this class)
+        const storeModel = new dbModel(inputObj, this.collection);
+        const storeData = await storeModel.storeUniqueURL();
+        storeArray.push(storeData);
+      } catch (e) {
+        console.log(e.url + "; " + e.message + "; F BREAK: " + e.function);
+      }
     }
 
     //just for tracking, not necessary
