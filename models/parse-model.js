@@ -36,9 +36,6 @@ class Parse {
 
     // Find all anchor tags within the article-link element (puts them in an)
     const linkElementArray = articleLinkElement.querySelectorAll("a");
-    console.log("HERRRRRRRE");
-    console.log(linkElementArray.length);
-
     const parseLinkModel = new Parse(linkElementArray);
 
     //get article List array
@@ -63,6 +60,8 @@ class Parse {
   async parseLinkArray() {
     //define things
     const linkElementArray = this.dataObject;
+    console.log("HERE NOW FAGGOT");
+    console.log(linkElementArray.length);
     const articleListArray = [];
     const urlConstant = "http://www.kcna.kp";
 
