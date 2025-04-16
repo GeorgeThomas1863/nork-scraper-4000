@@ -74,6 +74,24 @@ class UTIL {
     //otherwise return stored value +1
     return articleIdStored + 1;
   }
+
+  async getNewArray() {
+    const dataType = this.dataObject.type;
+    let checkParams = "";
+
+    //prob convert to select case
+    if (dataType === "articleDownload") {
+      checkParams = {
+        collection1: CONFIG.articleURLs, //list of article URLs (just updated)
+        collection2: CONFIG.articleDownloaded, //list of articles content already downloaded
+      };
+    }
+
+    const checkModel = new dbModel(checkParams, "");
+    const newArray = await checkModel.findNewURLs();
+
+    return newArray;
+  }
 }
 
 export default UTIL;
