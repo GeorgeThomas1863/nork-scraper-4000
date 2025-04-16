@@ -42,11 +42,11 @@ class Parse {
     const articleListArray = await parseLinkModel.parseLinkArray();
 
     //sort the array
-    const sortModel = new UTIL({ data: articleListArray });
+    const sortModel = new UTIL(articleListArray);
     const articleListSort = await sortModel.sortArrayByDate();
 
     //add article ID
-    const idModel = new UTIL({ data: articleListSort });
+    const idModel = new UTIL(articleListSort);
     const articleListStore = await idModel.addArticleIdArray();
 
     const storeDataModel = new dbModel(articleListStore, CONFIG.articleURLs);

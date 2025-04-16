@@ -21,7 +21,7 @@ class UTIL {
    * @returns sorted Array of article OBJECTS (sorted by date oldest to newest)
    */
   async sortArrayByDate() {
-    const inputArray = this.dataObject.data;
+    const inputArray = this.dataObject;
     //return null on blank input
     if (!inputArray || !inputArray.length) return null;
 
@@ -46,7 +46,9 @@ class UTIL {
    * @returns current article Id
    */
   async addArticleIdArray() {
-    const inputArray = this.dataObject.data;
+    const inputArray = this.dataObject;
+    if (!inputArray || !inputArray.length) return null;
+
     const currentArticleId = await this.getCurrentArticleId();
 
     const returnArray = [];
