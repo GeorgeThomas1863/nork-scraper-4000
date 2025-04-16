@@ -22,8 +22,6 @@ export const getNewArticleURLs = async () => {
   //get the article list array from current articles html
   const parseModel = new Parse(articleListHtml);
   const articleListArray = await parseModel.parseArticleList();
-  console.log("ARTICLE LIST ARRAY");
-  console.log(articleListArray);
 
   //just for tracking
   return articleListArray;
@@ -38,6 +36,9 @@ export const getNewArticleURLs = async () => {
 export const getNewArticleContent = async () => {
   const checkModel = new UTIL({ type: "download" });
   const inputArray = await checkModel.getNewArray();
+
+  console.log("INPUT ARRAY");
+  console.log(inputArray);
 
   //return if input empty (shouldnt happen)
   if (!inputArray || !inputArray.length) return null;
