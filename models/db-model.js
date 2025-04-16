@@ -50,6 +50,32 @@ class dbModel {
   }
 
   /**
+   * Sorts an ARRAY, ADDs article ID
+   * @function sortArticleList
+   * @returns {array} ARRAY of sorted OBJECTs
+   */
+  async storeArray() {
+    //return null on blank input
+    const storeArray = [];
+    const inputArray = this.dataObject.data;
+    if (!inputArray || !inputArray.length) return null;
+
+    // loop through input array (of OBJs) adding articleId identifier
+    for (let i = 0; i < inputArray.length; i++) {
+      const inputObj = inputArray[i];
+
+      //throws error if not unique
+      //(claude claims i can instantiate a new instance from within this class)
+      const storeModel = new dbModel(inputObj, this.collection);
+      const storeData = await storeModel.storeUniqueURL();
+      storeArray.push(storeData);
+    }
+
+    //just for tracking, not necessary
+    return storeArray;
+  }
+
+  /**
    * Checks if URL already exists in the collection (throws error if it does)
    * @function urlNewCheck
    * @returns {Promise<boolean>} True if the URL is new (not in the collection)

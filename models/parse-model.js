@@ -3,6 +3,8 @@ import { JSDOM } from "jsdom";
 import UTIL from "./util-model.js";
 import CONFIG from "../config/scrape-config.js";
 
+import dbModel from "./db-model.js";
+
 /**
  * @class Parse
  * @description Parses shit (mostly html)
@@ -63,10 +65,15 @@ class Parse {
       articleListArray.push(listObj); //add to array
     }
 
-    const sortModel = new UTIL({ inputArray: articleListArray });
-    const articleListNormal = await sortModel.sortArticleArray();
+    //sort the array
+    const sortModel = new UTIL({ data: articleListArray });
+    const articleListSort = await sortModel.sortArrayByDate();
 
-    const storeModel = new UTIL({ data: articleListNormal, collection: CONFIG.articleURLs });
+    //add article ID
+    const idModel = new UTIL({ data: articleListSort });
+    const articleListStore = await idModel.addArticleId();
+
+    const storeModel = new dbModel({ data: articleListStore }, CONFIG.articleURLs);
     const storeData = await storeModel.storeArray();
     console.log(storeData);
 
