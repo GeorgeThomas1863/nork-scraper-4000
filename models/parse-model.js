@@ -60,8 +60,6 @@ class Parse {
   async parseLinkArray() {
     //define things
     const linkElementArray = this.dataObject;
-    console.log("HERE NOW FAGGOT");
-    console.log(linkElementArray.length);
     const articleListArray = [];
     const urlConstant = "http://www.kcna.kp";
 
@@ -82,6 +80,9 @@ class Parse {
         url: url,
         date: articleDate,
       };
+
+      console.log("NOW FUCKING HERE");
+      console.log(listObj);
 
       articleListArray.push(listObj); //add to array
     }
