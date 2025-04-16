@@ -4,7 +4,7 @@ import dbModel from "../../models/db-model.js";
 import Parse from "../../models/parse-model.js";
 
 import { parseArticleListHtml, parseArticleContentHtml } from "./articles-parse.js";
-import { sortArticleArray, getArticleId } from "./articles-util.js";
+// import { sortArticleArray, getArticleId } from "./articles-util.js";
 // import { buildPicObj } from "../pics/pics-urls.js";
 
 /**
@@ -20,11 +20,12 @@ export const getNewArticleURLs = async () => {
   //get the article list array from current articles html
   const parseModel = new Parse({ html: articleListHtml });
   const articleListArray = await parseModel.parseArticleList();
+  console.log(articleListArray);
 
-  //NORMALIZE list by soring by date, add in id AND storing the ARRAY
-  const normalListArray = await getNormalArticleList(articleListArray);
-  console.log("NORMAL LIST ARRAY");
-  console.log(normalListArray);
+  // //NORMALIZE list by soring by date, add in id AND storing the ARRAY
+  // const normalListArray = await getNormalArticleList(articleListArray);
+  // console.log("NORMAL LIST ARRAY");
+  // console.log(normalListArray);
 
   //check if any new
   const checkParams = {
