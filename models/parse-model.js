@@ -81,9 +81,6 @@ class Parse {
         date: articleDate,
       };
 
-      console.log("NOW FUCKING HERE");
-      console.log(listObj);
-
       articleListArray.push(listObj); //add to array
     }
 
