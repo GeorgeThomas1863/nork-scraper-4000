@@ -48,6 +48,10 @@ export const getNewArticleContent = async () => {
   //loop through input array
   for (let i = 0; i < inputArray.length; i++) {
     const listObj = inputArray[i];
+    console.log("HERE FAGGOT");
+
+    console.log(listObj);
+
     try {
       const articleObj = await getNewArticleObj(listObj);
       if (!articleObj) continue;
